@@ -32,6 +32,10 @@ def init_db():
 
 init_db()
 
+@app.get("/")
+async def root():
+    return {"mensagem": "Bem-vindo ao Encurtador de URLs Premium! Acesse /docs para testar a API."}
+
 
 ### == Função para gerar um código curto único ==============
 
