@@ -2,7 +2,7 @@ import sqlite3
 import random
 import string
 from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, FileResponse
 from user_agents import parse
 
 app = FastAPI()
@@ -34,7 +34,7 @@ init_db()
 
 @app.get("/")
 async def root():
-    return {"mensagem": "Bem-vindo ao Encurtador de URLs Premium! Acesse /docs para testar a API."}
+    return FileResponse("index.html")
 
 
 ### == Função para gerar um código curto único ==============
