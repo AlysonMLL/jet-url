@@ -11,7 +11,8 @@ from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import RedirectResponse, FileResponse
 from user_agents import parse
 
-
+# uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+#  uvicorn main:app --reload
 
 app = FastAPI()
 
@@ -171,7 +172,7 @@ async def get_stats(short_code: str):
     
     return resultado
 
-# uvicorn main:app --reload 
+# 
 
 @app.get("/exportar-dados")
 async def export_data():
