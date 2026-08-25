@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jet.URL | Encurtador Premium</title>
-    <link rel="icon" type="image/png" href="/public/url_icon2.png">
+    <link rel="icon" type="image/png" href="/public/url_icon3.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
@@ -13,11 +13,10 @@
             theme: {
                 extend: {
                     colors: {
-                        brand: '#e6c169', 
+                        brand: '#f3bf43', 
                         dark: '#080808',  
                         card: '#111111',  
                         borderDark: '#222222',
-                        // Adicionando um tom para o modo claro
                         brandLight: '#d4af37' 
                     },
                     fontFamily: {
@@ -32,10 +31,13 @@
 
     <!-- Header com o Botão de Tema -->
     <header class="p-8 flex justify-between items-center max-w-4xl mx-auto w-full">
-        <span class="text-brandLight dark:text-brand font-mono text-xl font-bold tracking-tight">Jet.URL</span>
+        <div class="flex items-center gap-3">
+            <img src="/assets/icon_logo.png" alt="Logo do Jet.URL" class="w-10 h-10">
+            <span class="text-brandLight dark:text-brand font-mono text-xl font-bold tracking-tight">Jet.URL</span>
+        </div>
         
         <!-- Botão Toggle -->
-        <button onclick="toggleTheme()" class="p-2 rounded-lg 50px bg-[#e6c169] shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:bg-[#C2C2C2] dark:hover:bg-borderDark transition-colors">
+        <button onclick="toggleTheme()" class="p-2 rounded-lg 50px bg-[#f3bf43] shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:bg-[#C2C2C2] dark:hover:bg-borderDark transition-colors">
             <!-- Inicia com o ícone do sol, já que a página começa no modo noturno -->
             <img id="themeIcon" src="/assets/sun_icon.png" alt="Alternar Tema" class="w-6 h-6">
             
@@ -61,7 +63,7 @@
                 <input type="url" id="urlInput" placeholder="cole sua URL aqui..." 
                     class="flex-grow bg-white dark:bg-transparent border border-gray-300 dark:border-borderDark text-slate-900 dark:text-white p-4 rounded-md focus:border-brand focus:outline-none font-mono placeholder-gray-400 dark:placeholder-gray-600 transition-colors shadow-sm dark:shadow-none">
                 <button onclick="encurtar()" 
-                    class="bg-brandLight dark:bg-brand text-white dark:text-black font-bold uppercase tracking-widest px-8 py-4 rounded-md hover:opacity-90 transition shadow-[0_0_15px_rgba(230,193,105,0.2)]">
+                    class="bg-brandLight dark:bg-brand text-white dark:text-black font-bold uppercase tracking-widest px-8 py-4 rounded-md hover:-translate-y-1 hover:opacity-90 transition shadow-[0_0_15px_rgba(230,193,105,0.2)]">
                     Encurtar
                 </button>
             </div>
@@ -83,36 +85,54 @@
 
         <!-- Cards de Funcionalidades Superior -->
         <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <div class="bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-colors transition-transform duration-300 ease-out hover:-translate-y-2">
-                <img src="/assets/url_iconsite2.png" alt="Ícone de URL" class="w-11 h-11 mb-4">
-                <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">URLs</h3>
-                <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Cole seu link e receba um URL encurtado.</p>
+            <!-- Card 1: URLs -->
+            <div class="group relative overflow-hidden bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-all duration-300 ease-out hover:-translate-y-2">
+                <!-- Linha do reflexo espelhado -->
+                <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 dark:via-white/10 to-transparent skew-x-12 transition-transform duration-1000 ease-out group-hover:translate-x-full"></div>
+                
+                <img src="/assets/url_iconsite2.png" alt="Ícone de URL" class="w-11 h-11 mb-4 relative z-10">
+                <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white relative z-10">URLs</h3>
+                <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed relative z-10">Cole seu link e receba um URL encurtado.</p>
             </div>
-            <div class="bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-colors transition-transform duration-300 ease-out hover:-translate-y-2">
-                <img src="/assets/qr_icon.png" alt="Ícone de QR Code" class="w-10 h-10 mb-4">
-                <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">QR Code</h3>
-                <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Gere QR Codes para seus links encurtados e compartilhe facilmente.</p>
+
+            <!-- Card 2: QR Code -->
+            <div class="group relative overflow-hidden bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-all duration-300 ease-out hover:-translate-y-2">
+                <!-- Linha do reflexo espelhado -->
+                <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 dark:via-white/10 to-transparent skew-x-12 transition-transform duration-1000 ease-out group-hover:translate-x-full"></div>
+                
+                <img src="/assets/qr_icon.png" alt="Ícone de QR Code" class="w-10 h-10 mb-4 relative z-10">
+                <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white relative z-10">QR Code</h3>
+                <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed relative z-10">Gere QR Codes para seus links encurtados e compartilhe facilmente.</p>
             </div>
-            <div class="bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-colors transition-transform duration-300 ease-out hover:-translate-y-2">
-                <img src="/assets/grafico_icon.png" alt="Ícone de Gráfico" class="w-10 h-10 mb-4">
-                <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Métricas</h3>
-                <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Acompanhe o desempenho das suas URLs em tempo real.</p>
+
+            <!-- Card 3: Métricas -->
+            <div class="group relative overflow-hidden bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-all duration-300 ease-out hover:-translate-y-2">
+                <!-- Linha do reflexo espelhado -->
+                <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 dark:via-white/10 to-transparent skew-x-12 transition-transform duration-1000 ease-out group-hover:translate-x-full"></div>
+                
+                <img src="/assets/grafico_icon.png" alt="Ícone de Gráfico" class="w-10 h-10 mb-4 relative z-10">
+                <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white relative z-10">Métricas</h3>
+                <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed relative z-10">Acompanhe o desempenho das suas URLs em tempo real.</p>
             </div>
         </div>
 
+
         <!-- Cards de Funcionalidades -->
-        <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <div class="bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-colors transition-transform duration-300 ease-out hover:-translate-y-2">
+        <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 pb-10">
+            <div class="group relative overflow-hidden bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-all duration-300 ease-out hover:-translate-y-2">
+                <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 dark:via-white/10 to-transparent skew-x-12 transition-transform duration-1000 ease-out group-hover:translate-x-full"></div>
                 <span class="text-brandLight dark:text-brand font-mono text-sm block mb-4">01</span>
                 <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Alta Performance</h3>
                 <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Desenvolvido em FastAPI. Cole, clique e copie em milissegundos. Sem páginas de carregamento, sem delay.</p>
             </div>
-            <div class="bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-colors transition-transform duration-300 ease-out hover:-translate-y-2">
+            <div class="group relative overflow-hidden bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-all duration-300 ease-out hover:-translate-y-2">
+                <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 dark:via-white/10 to-transparent skew-x-12 transition-transform duration-1000 ease-out group-hover:translate-x-full"></div>
                 <span class="text-brandLight dark:text-brand font-mono text-sm block mb-4">02</span>
                 <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Rastreio Inteligente</h3>
                 <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Identifica automaticamente o tipo de dispositivo (Mobile, Tablet ou Desktop) de quem clica no seu link.</p>
             </div>
-            <div class="bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-colors transition-transform duration-300 ease-out hover:-translate-y-2">
+                <div class="group relative overflow-hidden bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-all duration-300 ease-out hover:-translate-y-2">
+                <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 dark:via-white/10 to-transparent skew-x-12 transition-transform duration-1000 ease-out group-hover:translate-x-full"></div>
                 <span class="text-brandLight dark:text-brand font-mono text-sm block mb-4">03</span>
                 <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Orientado a Dados</h3>
                 <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Métricas transparentes e centralizadas. Acompanhe o desempenho das suas URLs em tempo real.</p>
@@ -120,7 +140,7 @@
         </div>
 
         <!-- Área de Estatísticas -->
-        <div class="w-full max-w-2xl border-t border-gray-200 dark:border-borderDark pt-16">
+        <div class="w-full max-w-2xl border-t border-gray-200 dark:border-borderDark py-16">
             <div class="text-center mb-8">
                 <h2 class="text-2xl font-bold mb-2 text-slate-900 dark:text-white">Painel de Métricas</h2>
                 <p class="text-slate-500 dark:text-gray-500">Cole o código do seu link curto para visualizar o tráfego.</p>
@@ -130,7 +150,7 @@
                 <input type="text" id="statsInput" placeholder="Ex: aB3dE" 
                     class="flex-grow bg-white dark:bg-transparent border border-gray-300 dark:border-borderDark text-slate-900 dark:text-white p-4 rounded-md focus:border-brand focus:outline-none font-mono text-center md:text-left transition-colors shadow-sm dark:shadow-none">
                 <button onclick="verStats()" 
-                    class="bg-slate-800 dark:bg-white text-white dark:text-black font-bold uppercase tracking-widest px-8 py-4 rounded-md hover:opacity-90 transition shadow-sm">
+                    class="bg-slate-800 dark:bg-white text-white dark:text-black font-bold uppercase tracking-widest px-8 py-4 rounded-md hover:opacity-90 transition shadow-sm hover:-translate-y-1">
                     Ver Dados
                 </button>
             </div>
@@ -179,6 +199,51 @@
                 myChart.update();
             }
         }
+
+        // === EFEITO DE DIGITAÇÃO NO CAMPO DE URL ===
+        const placeholderText = 'cole sua URL aqui...';
+        let placeholderIndex = 0;
+        let placeholderCursorVisible = true;
+
+        function renderUrlPlaceholder() {
+            const urlInput = document.getElementById('urlInput');
+            const typedText = placeholderText.slice(0, placeholderIndex);
+
+            if (!urlInput.value) {
+                urlInput.placeholder = `${typedText}${placeholderCursorVisible ? '|' : ''}`;
+            }
+        }
+
+        function typeUrlPlaceholder() {
+            const urlInput = document.getElementById('urlInput');
+
+            if (urlInput.value) {
+                urlInput.placeholder = placeholderText;
+                placeholderIndex = 0;
+                setTimeout(typeUrlPlaceholder, 300);
+                return;
+            }
+
+            renderUrlPlaceholder();
+            placeholderIndex += 1;
+
+            if (placeholderIndex > placeholderText.length) {
+                setTimeout(() => {
+                    placeholderIndex = 0;
+                    typeUrlPlaceholder();
+                }, 4000);
+                return;
+            }
+
+            setTimeout(typeUrlPlaceholder, 90);
+        }
+
+        setInterval(() => {
+            placeholderCursorVisible = !placeholderCursorVisible;
+            renderUrlPlaceholder();
+        }, 500);
+
+        typeUrlPlaceholder();
 
         
         async function encurtar() {
@@ -293,4 +358,8 @@
         }
     </script>
 </body>
+
+<footer class="border-t border-gray-200 dark:border-borderDark pt-16 text-white dark:text-gray-300 py-6 px-4 text-center">
+    <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">&copy; 2026 Alyson Medeiros. Todos os direitos reservados.</p>
+</footer>
 </html>
