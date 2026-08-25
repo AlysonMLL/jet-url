@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>lnk. | Encurtador Premium</title>
+    <title>Jet.URL | Encurtador Premium</title>
+    <link rel="icon" type="image/png" href="/public/url_icon2.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -25,10 +26,10 @@
 </head>
 <body class="bg-dark text-white font-sans antialiased selection:bg-brand selection:text-black min-h-screen flex flex-col">
 
-    <!-- Header Simples -->
+    <!-- Header -->
     <header class="p-8">
         <div class="max-w-4xl mx-auto">
-            <span class="text-brand font-mono text-xl font-bold tracking-tight">lnk.</span>
+            <span class="text-brand font-mono text-xl font-bold tracking-tight">Jet.URL</span>
         </div>
     </header>
 
@@ -56,20 +57,26 @@
                 </button>
             </div>
             
-            <!-- Resultado do Encurtamento (Escondido por padrão) -->
-            <div id="shortResultArea" class="hidden mt-6 p-4 border border-brand/30 bg-brand/5 rounded-md flex flex-col md:flex-row items-center justify-between gap-4">
-                <div>
-                    <span class="text-gray-400 text-sm font-mono block mb-1">Seu link está pronto:</span>
-                    <a href="#" id="shortLink" target="_blank" class="text-brand font-bold text-xl hover:underline break-all"></a>
+            <!-- Resultado do Encurtamento -->
+            <div id="shortResultArea" class="hidden mt-6 p-6 border border-brand/30 bg-brand/5 rounded-md flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex flex-col md:flex-row items-center gap-6 text-center md:text-left w-full">
+                    <!-- Aqui vai aparecer o QR Code -->
+                    <img id="qrCodeImg" src="" alt="QR Code do Link" class="w-32 h-32 rounded-md shadow-lg border border-borderDark bg-white p-2">
+                    
+                    <div class="flex-grow">
+                        <span class="text-gray-400 text-sm font-mono block mb-1">Seu link está pronto:</span>
+                        <a href="#" id="shortLink" target="_blank" class="text-brand font-bold text-xl md:text-2xl hover:underline break-all block mb-3"></a>
+                        <button onclick="copiarLink()" class="w-full md:w-auto border border-brand text-brand hover:bg-brand hover:text-black px-6 py-2 rounded font-mono text-sm font-bold transition-colors shadow-[0_0_10px_rgba(230,193,105,0.1)]">
+                            COPIAR LINK
+                        </button>
+                    </div>
                 </div>
-                <button onclick="copiarLink()" class="border border-brand text-brand hover:bg-brand hover:text-black px-4 py-2 rounded font-mono text-sm transition transition-colors">
-                    COPIAR
-                </button>
-            </div>
+</div>
         </div>
 
         <!-- Cards de Funcionalidades -->
-        <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
+        <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-6 mb-20" style="transform: translateY(-10px)">
+            
             <div class="bg-card border border-borderDark p-8 rounded-lg hover:border-brand/50 transition">
                 <span class="text-brand font-mono text-sm block mb-4">01</span>
                 <h3 class="text-xl font-bold mb-3">Alta Performance</h3>
@@ -133,12 +140,18 @@
                 
                 const data = await res.json();
                 
+                // Atualiza o link
                 const linkEl = document.getElementById('shortLink');
                 linkEl.href = data.short_url;
                 linkEl.textContent = data.short_url;
                 
+                // Atualiza o QR Code
+                const qrEl = document.getElementById('qrCodeImg');
+                qrEl.src = data.qr_code;
+                
+                // Exibe o painel
                 document.getElementById('shortResultArea').classList.remove('hidden');
-                document.getElementById('urlInput').value = ''; // Limpa o input
+                document.getElementById('urlInput').value = '';
             } catch (error) {
                 alert('Erro ao processar a URL. Tente novamente.');
             }
