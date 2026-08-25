@@ -20,7 +20,8 @@
                         brandLight: '#d4af37' 
                     },
                     fontFamily: {
-                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+                        
                     }
                 }
             }
@@ -61,7 +62,7 @@
         <div class="w-full max-w-2xl mb-16">
             <div class="flex flex-col md:flex-row gap-4">
                 <input type="url" id="urlInput" placeholder="cole sua URL aqui..." 
-                    class="flex-grow bg-white dark:bg-transparent border border-gray-300 dark:border-borderDark text-slate-900 dark:text-white p-4 rounded-md focus:border-brand focus:outline-none font-mono placeholder-gray-400 dark:placeholder-gray-600 transition-colors shadow-sm dark:shadow-none">
+                    class="flex-grow bg-white dark:bg-transparent border border-gray-300 dark:border-borderDark text-slate-900 dark:text-white p-4 rounded-md focus:border-brand focus:outline-none font-custom placeholder-gray-400 dark:placeholder-gray-600 transition-colors shadow-sm dark:shadow-none">
                 <button onclick="encurtar()" 
                     class="bg-brandLight dark:bg-brand text-white dark:text-black font-bold uppercase tracking-widest px-8 py-4 rounded-md hover:-translate-y-1 hover:opacity-90 transition shadow-[0_0_15px_rgba(230,193,105,0.2)]">
                     Encurtar
@@ -175,6 +176,36 @@
                     <div class="w-full h-48 relative">
                         <canvas id="deviceChart"></canvas>
                     </div>
+                </div>
+            </div>
+        </div>
+        <!-- Seção de Dúvidas Frequentes (FAQ) -->
+        <div class="w-full max-w-2xl border-t border-gray-200 dark:border-borderDark pt-16 pb-2">
+            <div class="text-center mb-10">
+                <h2 class="text-2xl font-bold mb-2 text-slate-900 dark:text-white">Dúvidas Frequentes</h2>
+                <p class="text-slate-500 dark:text-gray-400">Entenda como o Jet.URL processa seus links e dados.</p>
+            </div>
+            
+            <div class="space-y-4">
+                <!-- Pergunta 1 -->
+                <div class="bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-6 rounded-lg shadow-sm dark:shadow-none hover:border-brandLight dark:hover:border-brand/50 transition-colors">
+                    <h4 class="font-bold text-slate-900 dark:text-white mb-2">Como o rastreamento de dispositivos funciona?</h4>
+                    <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Nosso backend analisa o cabeçalho (User-Agent) da requisição no momento do clique, extraindo apenas a categoria do dispositivo (Mobile, Desktop ou Tablet), garantindo performance e privacidade, sem coletar dados sensíveis.</p>
+                </div>
+                <!-- Pergunta 2 -->
+                <div class="bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-6 rounded-lg shadow-sm dark:shadow-none hover:border-brandLight dark:hover:border-brand/50 transition-colors">
+                    <h4 class="font-bold text-slate-900 dark:text-white mb-2">Os links e métricas expiram?</h4>
+                    <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Não. Uma vez gerado, o link curto e seu respectivo QR Code permanecem ativos permanentemente, armazenados e roteados através de nosso banco de dados relacional.</p>
+                </div>
+                <!-- Pergunta 3 -->
+                <div class="bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-6 rounded-lg shadow-sm dark:shadow-none hover:border-brandLight dark:hover:border-brand/50 transition-colors">
+                    <h4 class="font-bold text-slate-900 dark:text-white mb-2">Posso exportar os dados de clique?</h4>
+                    <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Sim. O Jet.URL possui uma integração voltada para pipelines de ETL. Se você é um desenvolvedor, pode acessar a rota de exportação para baixar todo o banco em formato CSV.</p>
+                </div>
+                <!-- Pergunta 4 -->
+                <div class="bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-6 rounded-lg shadow-sm dark:shadow-none hover:border-brandLight dark:hover:border-brand/50 transition-colors">
+                    <h4 class="font-bold text-slate-900 dark:text-white mb-2">O serviço é gratuito?</h4>
+                    <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Sim, o Jet.URL oferece um serviço gratuito com nossas funcionalidades.</p>
                 </div>
             </div>
         </div>
@@ -359,7 +390,28 @@
     </script>
 </body>
 
-<footer class="border-t border-gray-200 dark:border-borderDark pt-16 text-white dark:text-gray-300 py-6 px-4 text-center">
-    <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">&copy; 2026 Alyson Medeiros. Todos os direitos reservados.</p>
-</footer>
+<!-- Footer Estratégico -->
+    <footer class="w-full border-t border-gray-200 dark:border-borderDark bg-slate-50 dark:bg-dark py-12 px-4 transition-colors">
+        <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            
+            <!-- Branding no Rodapé -->
+            <div class="flex items-center gap-3 opacity-80 hover:opacity-100 transition-opacity">
+                <img src="/assets/icon_logo.png" alt="Logo do Jet.URL" class="w-8 h-8 grayscale">
+                <span class="text-slate-700 dark:text-gray-300 font-mono text-lg font-bold tracking-tight">Jet.URL</span>
+            </div>
+
+            <!-- Links de Portfólio -->
+            <div class="flex flex-wrap justify-center gap-6 text-sm font-mono">
+                <a href="https://github.com/AlysonMLL" target="_blank" class="text-slate-500 dark:text-gray-400 hover:text-brandLight dark:hover:text-brand transition-colors">GitHub</a>
+                <a href="https://linkedin.com/in/alysonmll" target="_blank" class="text-slate-500 dark:text-gray-400 hover:text-brandLight dark:hover:text-brand transition-colors">LinkedIn</a>
+                <a href="/exportar-dados" target="_blank" class="text-slate-500 dark:text-gray-400 hover:text-brandLight dark:hover:text-brand transition-colors">Extrair Dados (CSV)</a>
+            </div>
+        </div>
+        
+        
+        <div class="max-w-4xl mx-auto mt-8 pt-8 border-t border-gray-200 dark:border-borderDark flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400 dark:text-gray-500 text-center md:text-left">
+            <p>&copy; 2026 Alyson Medeiros. Todos os direitos reservados.</p>
+            <p class="font-mono">Desenvolvido com Python, FastAPI & Tailwind</p>
+        </div>
+    </footer>
 </html>
