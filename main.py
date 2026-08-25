@@ -18,6 +18,7 @@ app = FastAPI()
 from fastapi.staticfiles import StaticFiles
 
 app.mount("/public", StaticFiles(directory="public"), name="public")
+app.mount("/assets", StaticFiles(directory="src/assets"), name="assets")
 
 def init_db():
     conn = sqlite3.connect("encurtador.db")

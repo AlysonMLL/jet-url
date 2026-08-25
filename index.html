@@ -1,20 +1,24 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="dark"> <!-- iniciando no modo dark -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jet.URL | Encurtador Premium</title>
     <link rel="icon" type="image/png" href="/public/url_icon2.png">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class', 
             theme: {
                 extend: {
                     colors: {
                         brand: '#e6c169', 
-                        dark: '#080808',  /* Fundo super escuro */
-                        card: '#111111',  /* Fundo dos cards */
-                        borderDark: '#222222'
+                        dark: '#080808',  
+                        card: '#111111',  
+                        borderDark: '#222222',
+                        // Adicionando um tom para o modo claro
+                        brandLight: '#d4af37' 
                     },
                     fontFamily: {
                         mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
@@ -24,25 +28,30 @@
         }
     </script>
 </head>
-<body class="bg-dark text-white font-sans antialiased selection:bg-brand selection:text-black min-h-screen flex flex-col">
+<body class="bg-slate-50 text-slate-900 dark:bg-dark dark:text-white font-sans antialiased selection:bg-brand selection:text-black min-h-screen flex flex-col transition-colors duration-300">
 
-    <!-- Header -->
-    <header class="p-8">
-        <div class="max-w-4xl mx-auto">
-            <span class="text-brand font-mono text-xl font-bold tracking-tight">Jet.URL</span>
-        </div>
+    <!-- Header com o Botão de Tema -->
+    <header class="p-8 flex justify-between items-center max-w-4xl mx-auto w-full">
+        <span class="text-brandLight dark:text-brand font-mono text-xl font-bold tracking-tight">Jet.URL</span>
+        
+        <!-- Botão Toggle -->
+        <button onclick="toggleTheme()" class="p-2 rounded-lg 50px bg-[#e6c169] shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:bg-[#C2C2C2] dark:hover:bg-borderDark transition-colors">
+            <!-- Inicia com o ícone do sol, já que a página começa no modo noturno -->
+            <img id="themeIcon" src="/assets/sun_icon.png" alt="Alternar Tema" class="w-6 h-6">
+            
+        </button>
     </header>
 
     <!-- Hero Section -->
     <main class="flex-grow flex flex-col items-center justify-center px-4 pb-20">
         <div class="text-center w-full max-w-2xl mb-12">
-            <h1 class="text-5xl md:text-6xl font-bold tracking-tight mb-6 leading-tight">
-                Copie.<br>
-                Cole.<br>
-                <span class="text-brand">Compartilhe.</span>
+            <h1 class="text-5xl md:text-6xl font-bold tracking-tight mb-6 leading-tight text-slate-900 dark:text-white">
+                Encurte.<br>
+                Compartilhe.<br>
+                <span class="text-brandLight dark:text-brand">Analise.</span>
             </h1>
-            <p class="text-gray-400 text-lg md:text-xl">
-                O encurtador de URL mais direto, focado em dados e performance. Sem conta, sem fricção — cole o link e monitore os cliques.
+            <p class="text-slate-600 dark:text-gray-400 text-lg md:text-xl">
+                O encurtador de URL mais direto, focado em dados e performance. Sem conta, sem fricção — cole o link e monitore os cliques. Para versatilidade e praticidade, o link vem acompanhado de QR Code, pronto para ser escaneado ou baixado.
             </p>
         </div>
 
@@ -50,86 +59,110 @@
         <div class="w-full max-w-2xl mb-16">
             <div class="flex flex-col md:flex-row gap-4">
                 <input type="url" id="urlInput" placeholder="cole sua URL aqui..." 
-                    class="flex-grow bg-transparent border border-borderDark text-white p-4 rounded-md focus:border-brand focus:outline-none font-mono placeholder-gray-600 transition">
+                    class="flex-grow bg-white dark:bg-transparent border border-gray-300 dark:border-borderDark text-slate-900 dark:text-white p-4 rounded-md focus:border-brand focus:outline-none font-mono placeholder-gray-400 dark:placeholder-gray-600 transition-colors shadow-sm dark:shadow-none">
                 <button onclick="encurtar()" 
-                    class="bg-brand text-black font-bold uppercase tracking-widest px-8 py-4 rounded-md hover:bg-yellow-500 transition shadow-[0_0_15px_rgba(230,193,105,0.2)]">
+                    class="bg-brandLight dark:bg-brand text-white dark:text-black font-bold uppercase tracking-widest px-8 py-4 rounded-md hover:opacity-90 transition shadow-[0_0_15px_rgba(230,193,105,0.2)]">
                     Encurtar
                 </button>
             </div>
             
             <!-- Resultado do Encurtamento -->
-            <div id="shortResultArea" class="hidden mt-6 p-6 border border-brand/30 bg-brand/5 rounded-md flex flex-col md:flex-row items-center justify-between gap-6">
+            <div id="shortResultArea" class="hidden mt-6 p-6 border border-yellow-200 dark:border-brand/30 bg-yellow-50 dark:bg-brand/5 rounded-md flex flex-col md:flex-row items-center justify-between gap-6 transition-colors">
                 <div class="flex flex-col md:flex-row items-center gap-6 text-center md:text-left w-full">
-                    <!-- Aqui vai aparecer o QR Code -->
-                    <img id="qrCodeImg" src="" alt="QR Code do Link" class="w-32 h-32 rounded-md shadow-lg border border-borderDark bg-white p-2">
-                    
+                    <img id="qrCodeImg" src="" alt="QR Code do Link" class="w-32 h-32 rounded-md shadow-lg border border-gray-200 dark:border-borderDark bg-white p-2">
                     <div class="flex-grow">
-                        <span class="text-gray-400 text-sm font-mono block mb-1">Seu link está pronto:</span>
-                        <a href="#" id="shortLink" target="_blank" class="text-brand font-bold text-xl md:text-2xl hover:underline break-all block mb-3"></a>
-                        <button onclick="copiarLink()" class="w-full md:w-auto border border-brand text-brand hover:bg-brand hover:text-black px-6 py-2 rounded font-mono text-sm font-bold transition-colors shadow-[0_0_10px_rgba(230,193,105,0.1)]">
+                        <span class="text-slate-500 dark:text-gray-400 text-sm font-mono block mb-1">Seu link está pronto:</span>
+                        <a href="#" id="shortLink" target="_blank" class="text-brandLight dark:text-brand font-bold text-xl md:text-2xl hover:underline break-all block mb-3"></a>
+                        <button onclick="copiarLink()" class="w-full md:w-auto border border-brandLight dark:border-brand text-brandLight dark:text-brand hover:bg-brand hover:text-white dark:hover:text-black px-6 py-2 rounded font-mono text-sm font-bold transition-colors">
                             COPIAR LINK
                         </button>
                     </div>
                 </div>
-</div>
+            </div>
         </div>
 
         <!-- Cards de Funcionalidades -->
-        <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-6 mb-20" style="transform: translateY(-10px)">
-            
-            <div class="bg-card border border-borderDark p-8 rounded-lg hover:border-brand/50 transition">
-                <span class="text-brand font-mono text-sm block mb-4">01</span>
-                <h3 class="text-xl font-bold mb-3">Alta Performance</h3>
-                <p class="text-gray-400 text-sm leading-relaxed">Desenvolvido em FastAPI. Cole, clique e copie em milissegundos. Sem páginas de carregamento, sem delay.</p>
+        <!-- Cards de Funcionalidades -->
+        <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
+            <div class="bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-colors transition-transform duration-300 ease-out hover:-translate-y-2">
+                <span class="text-brandLight dark:text-brand font-mono text-sm block mb-4">01</span>
+                <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Alta Performance</h3>
+                <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Desenvolvido em FastAPI. Cole, clique e copie em milissegundos. Sem páginas de carregamento, sem delay.</p>
             </div>
-            <div class="bg-card border border-borderDark p-8 rounded-lg hover:border-brand/50 transition">
-                <span class="text-brand font-mono text-sm block mb-4">02</span>
-                <h3 class="text-xl font-bold mb-3">Rastreio Inteligente</h3>
-                <p class="text-gray-400 text-sm leading-relaxed">Identifica automaticamente o tipo de dispositivo (Mobile, Tablet ou Desktop) de quem clica no seu link.</p>
+            <div class="bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-colors transition-transform duration-300 ease-out hover:-translate-y-2">
+                <span class="text-brandLight dark:text-brand font-mono text-sm block mb-4">02</span>
+                <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Rastreio Inteligente</h3>
+                <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Identifica automaticamente o tipo de dispositivo (Mobile, Tablet ou Desktop) de quem clica no seu link.</p>
             </div>
-            <div class="bg-card border border-borderDark p-8 rounded-lg hover:border-brand/50 transition">
-                <span class="text-brand font-mono text-sm block mb-4">03</span>
-                <h3 class="text-xl font-bold mb-3">Orientado a Dados</h3>
-                <p class="text-gray-400 text-sm leading-relaxed">Métricas transparentes e centralizadas. Acompanhe o desempenho das suas URLs em tempo real.</p>
+            <div class="bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-colors transition-transform duration-300 ease-out hover:-translate-y-2">
+                <span class="text-brandLight dark:text-brand font-mono text-sm block mb-4">03</span>
+                <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Orientado a Dados</h3>
+                <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Métricas transparentes e centralizadas. Acompanhe o desempenho das suas URLs em tempo real.</p>
             </div>
         </div>
 
         <!-- Área de Estatísticas -->
-        <div class="w-full max-w-2xl border-t border-borderDark pt-16">
+        <div class="w-full max-w-2xl border-t border-gray-200 dark:border-borderDark pt-16">
             <div class="text-center mb-8">
-                <h2 class="text-2xl font-bold mb-2">Painel de Métricas</h2>
-                <p class="text-gray-500">Cole o código do seu link curto para visualizar o tráfego.</p>
+                <h2 class="text-2xl font-bold mb-2 text-slate-900 dark:text-white">Painel de Métricas</h2>
+                <p class="text-slate-500 dark:text-gray-500">Cole o código do seu link curto para visualizar o tráfego.</p>
             </div>
             
             <div class="flex flex-col md:flex-row gap-4 mb-6">
                 <input type="text" id="statsInput" placeholder="Ex: aB3dE" 
-                    class="flex-grow bg-transparent border border-borderDark text-white p-4 rounded-md focus:border-white focus:outline-none font-mono text-center md:text-left transition">
+                    class="flex-grow bg-white dark:bg-transparent border border-gray-300 dark:border-borderDark text-slate-900 dark:text-white p-4 rounded-md focus:border-brand focus:outline-none font-mono text-center md:text-left transition-colors shadow-sm dark:shadow-none">
                 <button onclick="verStats()" 
-                    class="bg-white text-black font-bold uppercase tracking-widest px-8 py-4 rounded-md hover:bg-gray-200 transition">
+                    class="bg-slate-800 dark:bg-white text-white dark:text-black font-bold uppercase tracking-widest px-8 py-4 rounded-md hover:opacity-90 transition shadow-sm">
                     Ver Dados
                 </button>
             </div>
 
             <!-- Resultado das Estatísticas -->
-            <div id="statsResult" class="hidden bg-card border border-borderDark p-6 rounded-lg">
-                <div class="flex justify-between items-end border-b border-borderDark pb-4 mb-4">
+            <div id="statsResult" class="hidden bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-6 rounded-lg w-full shadow-sm dark:shadow-none transition-colors">
+                <div class="flex justify-between items-end border-b border-gray-200 dark:border-borderDark pb-4 mb-6">
                     <div>
-                        <span class="text-gray-400 text-sm font-mono block">Total de Cliques</span>
-                        <span id="totalClicks" class="text-4xl font-bold text-brand">0</span>
+                        <span class="text-slate-500 dark:text-gray-400 text-sm font-mono block">Total de Cliques</span>
+                        <span id="totalClicks" class="text-4xl font-bold text-brandLight dark:text-brand">0</span>
                     </div>
                 </div>
-                <div>
-                    <span class="text-gray-400 text-sm font-mono block mb-3">Acessos por Dispositivo:</span>
-                    <ul id="deviceList" class="space-y-2 font-mono text-sm text-gray-300">
-                        <!-- Preenchido via JS -->
-                    </ul>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <span class="text-slate-500 dark:text-gray-400 text-sm font-mono block mb-3">Acessos por Dispositivo:</span>
+                        <ul id="deviceList" class="space-y-2 font-mono text-sm text-slate-600 dark:text-gray-300">
+                            <!-- Preenchido via JS -->
+                        </ul>
+                    </div>
+                    
+                    <div class="w-full h-48 relative">
+                        <canvas id="deviceChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Scripts de Integração -->
     <script>
+        // === LÓGICA DO TEMA CLARO/ESCURO ===
+        function toggleTheme() {
+            const htmlEl = document.documentElement;
+            const iconEl = document.getElementById('themeIcon');
+            
+            // Alterna a classe 'dark' no HTML
+            const isDark = htmlEl.classList.toggle('dark');
+            
+            // Troca o ícone apontando para a sua pasta src/assets
+            iconEl.src = isDark ? '/assets/sun_icon.png' : '/assets/lua_icon.png';
+            
+            // Se o gráfico já estiver na tela, atualiza as cores dele dinamicamente
+            if (myChart) {
+                myChart.data.datasets[0].borderColor = isDark ? '#111111' : '#ffffff';
+                myChart.options.plugins.legend.labels.color = isDark ? '#9ca3af' : '#475569';
+                myChart.update();
+            }
+        }
+
+        
         async function encurtar() {
             const url = document.getElementById('urlInput').value;
             if(!url) return alert('Por favor, cole uma URL válida.');
@@ -140,18 +173,14 @@
                 
                 const data = await res.json();
                 
-                // Atualiza o link
                 const linkEl = document.getElementById('shortLink');
                 linkEl.href = data.short_url;
                 linkEl.textContent = data.short_url;
                 
-                // Atualiza o QR Code
-                const qrEl = document.getElementById('qrCodeImg');
-                qrEl.src = data.qr_code;
+                document.getElementById('qrCodeImg').src = data.qr_code;
                 
-                // Exibe o painel
                 document.getElementById('shortResultArea').classList.remove('hidden');
-                document.getElementById('urlInput').value = '';
+                document.getElementById('urlInput').value = ''; 
             } catch (error) {
                 alert('Erro ao processar a URL. Tente novamente.');
             }
@@ -163,11 +192,12 @@
             alert('Link copiado para a área de transferência!');
         }
 
+        let myChart = null; 
+
         async function verStats() {
             let code = document.getElementById('statsInput').value.trim();
             if(!code) return alert('Digite o código do link.');
             
-            // Se o usuário colar o link inteiro (ex: localhost:8000/aB3dE), pega só o código
             if (code.includes('/')) {
                 code = code.split('/').pop();
             }
@@ -181,26 +211,67 @@
                     return;
                 }
                 
-                // Preenche os dados
                 document.getElementById('totalClicks').textContent = data.total_clicks || 0;
                 
                 const listEl = document.getElementById('deviceList');
-                listEl.innerHTML = ''; // Limpa a lista
+                listEl.innerHTML = ''; 
                 
-                // Filtra apenas os dispositivos (ignora a chave total_clicks)
+                const labels = [];
+                const chartData = [];
+                
                 Object.keys(data).forEach(key => {
                     if (key !== 'total_clicks') {
                         const li = document.createElement('li');
-                        li.className = "flex justify-between border-b border-borderDark/50 pb-2";
-                        li.innerHTML = `<span>> ${key}</span> <span class="text-white">${data[key]}</span>`;
+                        li.className = "flex justify-between border-b border-gray-200 dark:border-borderDark/50 pb-2 transition-colors";
+                        li.innerHTML = `<span>> ${key}</span> <span class="text-slate-900 dark:text-white font-bold">${data[key]}</span>`;
                         listEl.appendChild(li);
+                        
+                        labels.push(key);
+                        chartData.push(data[key]);
                     }
                 });
                 
                 document.getElementById('statsResult').classList.remove('hidden');
+                renderChart(labels, chartData);
+                
             } catch (error) {
                 alert('Erro ao buscar os dados.');
             }
+        }
+
+        function renderChart(labels, data) {
+            const ctx = document.getElementById('deviceChart').getContext('2d');
+            const isDark = document.documentElement.classList.contains('dark');
+            
+            if (myChart) {
+                myChart.destroy();
+            }
+            
+            myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ['#e6c169', '#333333', '#888888'],
+                        borderColor: isDark ? '#111111' : '#ffffff',
+                        borderWidth: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: isDark ? '#9ca3af' : '#475569',
+                                font: { family: 'ui-monospace, monospace' }
+                            }
+                        }
+                    }
+                }
+            });
         }
     </script>
 </body>
