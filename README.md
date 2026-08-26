@@ -57,3 +57,21 @@ Siga os passos abaixo para rodar a aplicação na sua máquina.
 1. **Clone este repositório:**
 ```bash
 git clone [https://github.com/AlysonMLL/jet-url.git](https://github.com/AlysonMLL/jet-url.git)
+```
+
+2. **Acesse a pasta do projeto:**
+```bash
+cd url-projeto
+```
+
+3. **Instale as dependências necessárias:**
+```bash
+pip install fastapi uvicorn user-agents "qrcode[pil]"
+```
+
+4. **Inicie o servidor local:**
+```bash
+uvicorn main:app --reload
+```
+
+5. **Acesse no seu navegador:** http://localhost:8000 para visualizar a interface principal, ou http://localhost:8000/docs para interagir diretamente com a documentação automática (Swagger) da API.
