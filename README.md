@@ -56,4 +56,4 @@ Siga os passos abaixo para rodar a aplicação na sua máquina.
 
 1. **Clone este repositório:**
 ```bash
-git clone [https://github.com/SEU-USUARIO/jet-url.git](https://github.com/SEU-USUARIO/jet-url.git)
+git clone [https://github.com/AlysonMLL/jet-url.git](https://github.com/AlysonMLL/jet-url.git)
