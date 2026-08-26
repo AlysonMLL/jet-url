@@ -18,8 +18,9 @@ O site também conta com **Dark Mode** e **Light Mode**, visando o conforto do u
 
 ---
 
-
 ## 🎯 Principais Funcionalidades
+
+<br>
 
 * **Encurtamento Inteligente:** Geração rápida de links curtos com regra de negócio anti-duplicidade (economizando I/O e espaço no banco de dados).
 * **Geração Dinâmica de QR Code:** Criação de QR Codes em memória RAM (Base64) entregues instantaneamente na resposta da API, sem armazenamento físico.
@@ -27,11 +28,14 @@ O site também conta com **Dark Mode** e **Light Mode**, visando o conforto do u
 * **Painel de Métricas Interativo:** Interface responsiva com gráficos gerados via Chart.js, suportando alternância dinâmica entre modo Claro e Escuro.
 * **Micro-Pipeline ETL (Exportação de Dados):** Rota dedicada para extração do banco de dados relacional (JOIN entre URLs e Cliques), retornando um arquivo `.csv` pronto para análise em Pandas ou PowerBI.
 
+<br>
 
 ## 🛠️ Tecnologias Utilizadas
 
+<br>
+
 **Backend & Dados:**
-* **Python 3.x:** Lógica de negócio e roteamento.
+* **Python:** Lógica de negócio e roteamento.
 * **FastAPI:** Framework assíncrono de altíssima performance para a construção da API REST.
 * **SQLite:** Banco de dados relacional leve e embutido.
 * **Pydantic:** Validação rigorosa de dados de entrada.
@@ -41,18 +45,26 @@ O site também conta com **Dark Mode** e **Light Mode**, visando o conforto do u
 * **Tailwind CSS (CDN):** Estilização utilitária e gerenciamento nativo de Dark Mode.
 * **Chart.js:** Renderização do gráfico de rosca (Doughnut) para as métricas.
 
+<br>
 
 ## 🗄️ Estrutura do Banco de Dados
+
+<br>
 
 O sistema utiliza um modelo relacional simples e eficiente para garantir a integridade dos dados coletados:
 
 * **Tabela `urls`**: Armazena as URLs originais e garante a unicidade do código curto gerado.
 * **Tabela `clicks`**: Registra cada evento de redirecionamento, vinculando via Chave Estrangeira (Foreign Key) ao código curto e salvando o tipo de dispositivo detectado.
 
+<br>
 
 ## ⚙️ Como Executar o Projeto Localmente
 
+<br>
+
 Siga os passos abaixo para rodar a aplicação na sua máquina.
+
+<br>
 
 1. **Clone este repositório:**
 ```bash
@@ -61,7 +73,7 @@ git clone [https://github.com/AlysonMLL/jet-url.git](https://github.com/AlysonML
 
 2. **Acesse a pasta do projeto:**
 ```bash
-cd url-projeto
+cd jet-url
 ```
 
 3. **Instale as dependências necessárias:**
