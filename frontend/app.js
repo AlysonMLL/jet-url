@@ -11,6 +11,7 @@ import { encurtarLink, buscarEstatisticas } from './api.js';
 import { renderizarGraficoDispositivos, renderizarGraficoOS, renderizarGraficoNavegadores } from './components.js';
 import { toggleTheme } from './theme.js';
 
+
 // Desestruturando as ferramentas nativas do Vue (importado via CDN no HTML)
 const { createApp, ref, computed, onMounted } = Vue;
 
@@ -56,6 +57,11 @@ const app = createApp({
         const isDarkTheme = ref(true); // O tailwind inicia com a classe .dark
         const placeholderAnimado = ref('cole sua URL aqui...');
 
+        const estipularData = ref(false); // Controla se o painel de datas aparece
+        const presetAtivo = ref('');
+        const dataInicio = ref('');
+        const dataFim = ref('');
+
         // 1. Computa o preview em tempo real (limpando espaços e caracteres especiais)
         const urlPreview = computed(() => {
             if (!apelidoInput.value) return '';
@@ -80,6 +86,35 @@ const app = createApp({
             isDarkTheme.value = toggleTheme(null);
         };
 
+        const presetsTempo = [
+            { label: '15min', horas: 0.25 }, { label: '30min', horas: 0.5 },
+            { label: '1h', horas: 1 }, { label: '3h', horas: 3 },
+            { label: '12h', horas: 12 }, { label: '24h', horas: 24 },
+            { label: '48h', horas: 48 }, { label: '72h', horas: 72 },
+            { label: '7 dias (168h)', horas: 168 }, { label: '30 dias (720h)', horas: 720 },
+        ];
+
+        // --- LÓGICA DE DATAS ---
+        const formatarParaInputLocal = (date) => {
+            // Ajusta o fuso para o input type="datetime-local" entender perfeitamente
+            const tzoffset = (new Date()).getTimezoneOffset() * 60000; 
+            return (new Date(date - tzoffset)).toISOString().slice(0, 16);
+        };
+
+        const selecionarPreset = (label, horas) => {
+            presetAtivo.value = label;
+            const agora = new Date();
+            const fim = new Date(agora.getTime() + horas * 60 * 60 * 1000);
+            
+            dataInicio.value = formatarParaInputLocal(agora);
+            dataFim.value = formatarParaInputLocal(fim);
+        };
+
+        const limparPreset = () => {
+            // Acionado quando o usuário digita manualmente no calendário
+            presetAtivo.value = ''; 
+        };
+
         const processarEncurtamento = async () => {
             if (!urlInput.value) {
                 erroEncurtar.value = "Por favor, digite uma URL válida.";
@@ -89,14 +124,30 @@ const app = createApp({
             carregando.value = true;
             shortUrl.value = '';
 
+            // Conversão de Data Local para Padrão ISO (UTC) do Banco de Dados
+            let startIso = '';
+            let expIso = '';
+            if (estipularData.value) {
+                if (dataInicio.value) startIso = new Date(dataInicio.value).toISOString();
+                if (dataFim.value) expIso = new Date(dataFim.value).toISOString();
+                
+                // Validação amigável
+                if (startIso && expIso && new Date(dataInicio.value) >= new Date(dataFim.value)) {
+                    erroEncurtar.value = "A data de término deve ser posterior à data de início.";
+                    carregando.value = false;
+                    return;
+                }
+            }
+
             try {
-                // Agora passa o apelido para a API
-                const dados = await encurtarLink(urlInput.value, apelidoInput.value);
+                // Passa as datas para a API!
+                const dados = await encurtarLink(urlInput.value, apelidoInput.value, startIso, expIso);
                 shortUrl.value = dados.short_url;
                 qrCodeUrl.value = dados.qr_code;
                 
-                urlInput.value = ''; 
-                apelidoInput.value = ''; // Limpa o apelido também
+                urlInput.value = ''; apelidoInput.value = ''; 
+                // Opcional: resetar as datas após sucesso
+                // estipularData.value = false; 
             } catch (error) {
                 erroEncurtar.value = error.message;
             } finally {
@@ -180,7 +231,8 @@ const app = createApp({
             codigoInput, dadosMetricas, labelsMetricas, valoresMetricas,
             isDarkTheme,
             alternarTema, processarEncurtamento, carregarMetricas, copiarLink, 
-            apelidoInput, urlPreview,
+            apelidoInput, urlPreview, estipularData, presetAtivo, dataInicio, dataFim, presetsTempo,
+            selecionarPreset, limparPreset
         };
     }
 });

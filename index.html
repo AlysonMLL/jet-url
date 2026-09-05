@@ -91,6 +91,51 @@
                     </div>
                 </div>
 
+                <!-- Checkbox de Data -->
+                <div class="ml-1 mt-3 flex flex-col items-center md:items-start w-full">
+                    <label class="flex items-center gap-3 cursor-pointer text-slate-500 dark:text-gray-400 font-mono text-sm uppercase tracking-widest hover:text-brandLight dark:hover:text-brand transition-colors">
+                        <input type="checkbox" v-model="estipularData" class="w-4 h-4 accent-brand cursor-pointer">
+                        Estipular Data
+                    </label>
+                </div>
+
+                <!-- Painel de Configuração de Tempo (Expande suavemente) -->
+                <div v-if="estipularData" class="mt-4 p-6 border border-gray-300 dark:border-borderDark rounded-md bg-white dark:bg-card/50 shadow-sm w-full transition-all animate-fade-in">
+                    
+                    <!-- Presets -->
+                    <span class="text-xs font-mono text-slate-500 uppercase tracking-widest block mb-4">Expira em</span>
+                    <div class="flex flex-wrap gap-3 mb-6">
+                        <button v-for="preset in presetsTempo" :key="preset.label" 
+                            @click="selecionarPreset(preset.label, preset.horas)"
+                            :class="presetAtivo === preset.label ? 'border-brandLight text-brandLight dark:border-brand dark:text-brand bg-yellow-50 dark:bg-brand/10 shadow-[0_0_10px_rgba(243,191,67,0.2)]' : 'border-gray-300 dark:border-borderDark text-slate-500 hover:border-slate-400 dark:hover:border-slate-500'"
+                            class="px-4 py-2 border rounded font-mono text-xs transition-all duration-200">
+                            {{ preset.label }}
+                        </button>
+                    </div>
+                    
+                    <!-- Divisor -->
+                    <div class="flex items-center gap-4 mb-6 opacity-60">
+                        <hr class="flex-grow border-gray-300 dark:border-borderDark">
+                        <span class="text-[10px] font-mono text-slate-500 uppercase tracking-widest">Ou defina manualmente</span>
+                        <hr class="flex-grow border-gray-300 dark:border-borderDark">
+                    </div>
+                    
+                    <!-- Inputs de Calendário -->
+                    <div class="flex flex-col md:flex-row gap-6">
+                        <div class="flex-1">
+                            <span class="text-xs font-mono text-slate-500 uppercase tracking-widest block mb-2">Data de Início</span>
+                            <!-- Dica de mestre: o [color-scheme:dark] nativo do Tailwind arruma o ícone de calendário no Dark Mode -->
+                            <input type="datetime-local" v-model="dataInicio" @input="limparPreset" 
+                                class="w-full bg-slate-50 dark:bg-[#111111] border border-gray-300 dark:border-borderDark text-slate-900 dark:text-white p-4 rounded-md focus:border-brand focus:outline-none font-mono text-sm [color-scheme:light] dark:[color-scheme:dark] transition-colors">
+                        </div>
+                        <div class="flex-1">
+                            <span class="text-xs font-mono text-slate-500 uppercase tracking-widest block mb-2">Data de Término</span>
+                            <input type="datetime-local" v-model="dataFim" @input="limparPreset" 
+                                class="w-full bg-slate-50 dark:bg-[#111111] border border-gray-300 dark:border-borderDark text-slate-900 dark:text-white p-4 rounded-md focus:border-brand focus:outline-none font-mono text-sm [color-scheme:light] dark:[color-scheme:dark] transition-colors">
+                        </div>
+                    </div>
+                </div>
+
                 <p v-if="erroEncurtar" class="text-red-500 text-sm font-bold mt-3 text-center md:text-left">{{ erroEncurtar }}</p>
                 
                 <!-- Resultado do Encurtamento -->

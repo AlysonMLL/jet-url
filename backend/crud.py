@@ -21,17 +21,29 @@ def get_url_by_original(original_url: str):
     return row[0] if row else None
 
 def get_url_by_code(short_code: str):
+    """Retorna a URL E as datas de validade também."""
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT original_url FROM urls WHERE short_code = %s", (short_code,))
+    cursor.execute("SELECT original_url, starts_at, expires_at FROM urls WHERE short_code = %s", (short_code,))
     row = cursor.fetchone()
     conn.close()
-    return row[0] if row else None
+    
+    if row:
+        return {
+            "original_url": row[0],
+            "starts_at": row[1],
+            "expires_at": row[2]
+        }
+    return None
 
-def create_url(original_url: str, short_code: str):
+def create_url(original_url: str, short_code: str, starts_at=None, expires_at=None):
+    """Agora aceita starts_at e expires_at opcionais."""
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO urls (original_url, short_code) VALUES (%s, %s)", (original_url, short_code))
+    cursor.execute("""
+        INSERT INTO urls (original_url, short_code, starts_at, expires_at) 
+        VALUES (%s, %s, %s, %s)
+    """, (original_url, short_code, starts_at, expires_at))
     conn.commit()
     conn.close()
 
