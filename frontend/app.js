@@ -40,13 +40,14 @@ function formatarTopN(objDados, maxItens = 5) {
 
 const app = createApp({
     setup() {
-        // --- 1. ESTADO REATIVO (Variáveis que controlam a tela) ---
+        // --- 0. ESTADO REATIVO (Variáveis que controlam a tela) ---
         const urlInput = ref('');
         const shortUrl = ref('');
         const qrCodeUrl = ref('');
         const carregando = ref(false);
         const erroEncurtar = ref('');
 
+        const apelidoInput = ref('');
         const codigoInput = ref('');
         const dadosMetricas = ref(null);
         const labelsMetricas = ref([]);
@@ -55,11 +56,27 @@ const app = createApp({
         const isDarkTheme = ref(true); // O tailwind inicia com a classe .dark
         const placeholderAnimado = ref('cole sua URL aqui...');
 
+        // 1. Computa o preview em tempo real (limpando espaços e caracteres especiais)
+        const urlPreview = computed(() => {
+            if (!apelidoInput.value) return '';
+            
+            // Remove acentos, espaços e deixa minúsculo
+            let aliasLimpo = apelidoInput.value
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+                .trim()
+                .replace(/\s+/g, '-');
+                
+            // Pega o domínio dinamicamente (ex: localhost:8000 ou jet.url)
+            const host = window.location.host; 
+            return `${host}/${aliasLimpo}`;
+        });
+
         // --- 2. FUNÇÕES (Métodos atrelados aos botões) ---
 
         const alternarTema = () => {
-            // Chamamos a função externa e ela nos diz se ficou dark ou não
-            // Passamos nulo para o gráfico por enquanto, pois o Vue vai re-renderizar depois se precisar
+            // É chamada a função externa e ela nos diz se ficou dark ou não
+            // Nulo para o gráfico por enquanto, pois o Vue vai re-renderizar depois se precisar
             isDarkTheme.value = toggleTheme(null);
         };
 
@@ -73,10 +90,13 @@ const app = createApp({
             shortUrl.value = '';
 
             try {
-                const dados = await encurtarLink(urlInput.value);
+                // Agora passa o apelido para a API
+                const dados = await encurtarLink(urlInput.value, apelidoInput.value);
                 shortUrl.value = dados.short_url;
                 qrCodeUrl.value = dados.qr_code;
-                urlInput.value = ''; // Limpa o input
+                
+                urlInput.value = ''; 
+                apelidoInput.value = ''; // Limpa o apelido também
             } catch (error) {
                 erroEncurtar.value = error.message;
             } finally {
@@ -159,7 +179,8 @@ const app = createApp({
             urlInput, shortUrl, qrCodeUrl, carregando, erroEncurtar, placeholderAnimado,
             codigoInput, dadosMetricas, labelsMetricas, valoresMetricas,
             isDarkTheme,
-            alternarTema, processarEncurtamento, carregarMetricas, copiarLink
+            alternarTema, processarEncurtamento, carregarMetricas, copiarLink, 
+            apelidoInput, urlPreview,
         };
     }
 });

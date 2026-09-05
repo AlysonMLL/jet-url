@@ -1,422 +1,272 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark"> <!-- iniciando no modo dark -->
+<html lang="pt-BR" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jet.URL | Encurtador Premium</title>
-    <link rel="icon" type="image/png" href="/public/url_icon3.png">
+    <link rel="icon" type="image/png" href="/public/favicon_jeturl.png">
+    
+    <!-- Bibliotecas Externas -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- VUE 3 (Via CDN) - Crucial para a tela funcionar -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
     <script>
         tailwind.config = {
             darkMode: 'class', 
             theme: {
                 extend: {
                     colors: {
-                        brand: '#f3bf43', 
-                        dark: '#080808',  
-                        card: '#111111',  
-                        borderDark: '#222222',
-                        brandLight: '#d4af37' 
+                        brand: '#f3bf43', dark: '#080808', card: '#111111', 
+                        borderDark: '#222222', brandLight: '#d4af37', brandBlue: '#4B67FA'
                     },
                     fontFamily: {
                         mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
-                        
                     }
                 }
             }
         }
     </script>
 </head>
-<body class="bg-slate-50 text-slate-900 dark:bg-dark dark:text-white font-sans antialiased selection:bg-brand selection:text-black min-h-screen flex flex-col transition-colors duration-300">
+<body class="bg-slate-50 text-slate-900 dark:bg-dark dark:text-white font-sans antialiased selection:bg-brand selection:text-black min-h-screen transition-colors duration-300">
 
-    <!-- Header com o Botão de Tema -->
-    <header class="p-8 flex justify-between items-center max-w-4xl mx-auto w-full">
-        <div class="flex items-center gap-3">
-            <img src="/assets/icon_logo.png" alt="Logo do Jet.URL" class="w-10 h-10">
-            <span class="text-brandLight dark:text-brand font-mono text-xl font-bold tracking-tight">Jet.URL</span>
-        </div>
-        
-        <!-- Botão Toggle -->
-        <button onclick="toggleTheme()" class="p-2 rounded-lg bg-[#f3bf43] shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:bg-[#d4af37] transition-colors text-black">
-            <!-- Ícone de Sol (Aparece no Dark Mode) -->
-            <svg id="themeIconSun" class="w-6 h-6 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-            </svg>
-            <!-- Ícone de Lua (Aparece no Light Mode) -->
-            <svg id="themeIconMoon" class="w-6 h-6 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-            </svg>
-        </button>
-    </header>
+    <!-- A DIV PAI DO VUE: Tudo aqui dentro é controlado pelo frontend/app.js -->
+    <div id="app" class="flex flex-col min-h-screen">
 
-    <!-- Hero Section -->
-    <main class="flex-grow flex flex-col items-center justify-center px-4 pb-20">
-        <div class="text-center w-full max-w-2xl mb-12">
-            <h1 class="text-5xl md:text-6xl font-bold tracking-tight mb-6 leading-tight text-slate-900 dark:text-white">
-                Copie.<br>
-                Cole.<br>
-                <span class="text-brandLight dark:text-brand">Compartilhe.</span>
-            </h1>
-            <p class="text-slate-600 dark:text-gray-400 text-lg md:text-xl">
-                O encurtador de URL mais direto, focado em dados e performance. Sem conta, sem fricção — cole o link e monitore os cliques. Para versatilidade e praticidade, o link vem acompanhado de QR Code, pronto para ser escaneado ou baixado.
-            </p>
-        </div>
-
-        <!-- Área de Encurtar -->
-        <div class="w-full max-w-2xl mb-16">
-            <div class="flex flex-col md:flex-row gap-4">
-                <input type="url" id="urlInput" placeholder="cole sua URL aqui..." 
-                    class="flex-grow bg-white dark:bg-transparent border border-gray-300 dark:border-borderDark text-slate-900 dark:text-white p-4 rounded-md focus:border-brand focus:outline-none font-custom placeholder-gray-400 dark:placeholder-gray-600 transition-colors shadow-sm dark:shadow-none">
-                <button onclick="encurtar()" 
-                    class="bg-brandLight dark:bg-brand text-white dark:text-black font-bold uppercase tracking-widest px-8 py-4 rounded-md hover:-translate-y-1 hover:opacity-90 transition shadow-[0_0_15px_rgba(230,193,105,0.2)]">
-                    Encurtar
-                </button>
+        <!-- Header -->
+        <header class="p-8 flex justify-between items-center max-w-5xl mx-auto w-full">
+            <div class="flex items-center">
+                <!-- Logo Dinâmica -->
+                <img :src="isDarkTheme ? '/assets/logo-jet.url_darkmode.png' : '/assets/logo-jet.url_lightmode.png'" 
+                     alt="Logo Jet.URL" 
+                     class="h-20 w-60 transition-all duration-300">
             </div>
             
-            <!-- Resultado do Encurtamento -->
-            <div id="shortResultArea" class="hidden mt-6 p-6 border border-yellow-200 dark:border-brand/30 bg-yellow-50 dark:bg-brand/5 rounded-md flex flex-col md:flex-row items-center justify-between gap-6 transition-colors">
-                <div class="flex flex-col md:flex-row items-center gap-6 text-center md:text-left w-full">
-                    <img id="qrCodeImg" src="" alt="QR Code do Link" class="w-32 h-32 rounded-md shadow-lg border border-gray-200 dark:border-borderDark bg-white p-2">
-                    <div class="flex-grow">
-                        <span class="text-slate-500 dark:text-gray-400 text-sm font-mono block mb-1">Seu link está pronto:</span>
-                        <a href="#" id="shortLink" target="_blank" class="text-brandLight dark:text-brand font-bold text-xl md:text-2xl hover:underline break-all block mb-3"></a>
-                        <button onclick="copiarLink()" class="w-full md:w-auto border border-brandLight dark:border-brand text-brandLight dark:text-brand hover:bg-brand hover:text-white dark:hover:text-black px-6 py-2 rounded font-mono text-sm font-bold transition-colors">
-                            COPIAR LINK
-                        </button>
+            <button @click="alternarTema" class="p-2 rounded-lg bg-[#f3bf43] shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:bg-[#d4af37] transition-colors text-black">
+                <svg v-if="isDarkTheme" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                </svg>
+                <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                </svg>
+            </button>
+        </header>
+
+        <!-- Main -->
+        <main class="flex-grow flex flex-col items-center justify-center px-4 pb-20">
+            <div class="text-center w-full max-w-2xl mb-12">
+                <h1 class="text-5xl md:text-6xl font-bold tracking-tight mb-6 leading-tight text-slate-900 dark:text-white">
+                    <span class="text-brandBlue dark:text-brandBlue">Copie.</span><br>Cole.<br><span class="text-brandLight dark:text-brand">Compartilhe.</span>
+                </h1>
+                <p class="text-slate-600 dark:text-gray-400 text-lg md:text-xl">
+                    O encurtador de URL mais direto, focado em dados e performance. Sem conta, sem fricção — cole o link e monitore os cliques. Para versatilidade e praticidade, o link vem acompanhado de QR Code, pronto para ser escaneado ou baixado.
+                </p>
+            </div>
+
+            <!-- Área de Encurtar -->
+            <div class="w-full max-w-2xl mb-16">
+                <!-- Input Principal -->
+                <div class="flex flex-col md:flex-row gap-4">
+                    <input type="url" v-model="urlInput" @keyup.enter="processarEncurtamento" :placeholder="placeholderAnimado" 
+                        class="flex-grow bg-white dark:bg-transparent border border-gray-300 dark:border-borderDark text-slate-900 dark:text-white p-4 rounded-md focus:border-brand focus:outline-none font-mono placeholder-gray-400 dark:placeholder-gray-600 transition-colors shadow-sm dark:shadow-none">
+                    
+                    <button @click="processarEncurtamento" :disabled="carregando" 
+                        class="bg-brandLight dark:bg-brand text-white dark:text-black font-bold uppercase tracking-widest px-8 py-4 rounded-md hover:-translate-y-1 hover:opacity-90 transition shadow-[0_0_15px_rgba(230,193,105,0.2)] disabled:opacity-50 disabled:hover:translate-y-0">
+                        {{ carregando ? 'Processando...' : 'Encurtar' }}
+                    </button>
+                </div>
+                
+                <!-- NOVO: Input de Apelido (Personalização) -->
+                <div class="mt-4 flex flex-col items-center md:items-start w-full">
+                    <input type="text" v-model="apelidoInput" placeholder="Apelido da URL (opcional, ex: meu-link)" 
+                        class="w-full bg-white dark:bg-transparent border border-gray-300 dark:border-borderDark text-slate-900 dark:text-white p-4 rounded-md focus:border-brand focus:outline-none font-mono text-sm transition-colors shadow-sm dark:shadow-none">
+                    
+                    <!-- Preview Dinâmico -->
+                    <div v-if="urlPreview" class="mt-3 text-sm text-slate-500 dark:text-gray-400 font-mono flex items-center gap-2 bg-yellow-50 dark:bg-brand/10 px-4 py-2 rounded border border-yellow-200 dark:border-brand/30 w-full transition-all">
+                        <svg class="w-4 h-4 text-brandLight dark:text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                        Seu link ficará: <span class="text-brandLight dark:text-brand font-bold">https://{{ urlPreview }}</span>
+                    </div>
+                </div>
+
+                <p v-if="erroEncurtar" class="text-red-500 text-sm font-bold mt-3 text-center md:text-left">{{ erroEncurtar }}</p>
+                
+                <!-- Resultado do Encurtamento -->
+                <div v-if="shortUrl" class="mt-6 p-6 border border-yellow-200 dark:border-brand/30 bg-yellow-50 dark:bg-brand/5 rounded-md flex flex-col md:flex-row items-center justify-between gap-6 transition-colors">
+                    <div class="flex flex-col md:flex-row items-center gap-6 text-center md:text-left w-full">
+                        <img :src="qrCodeUrl" alt="QR Code do Link" class="w-32 h-32 rounded-md shadow-lg border border-gray-200 dark:border-borderDark bg-white p-2">
+                        <div class="flex-grow">
+                            <span class="text-slate-500 dark:text-gray-400 text-sm font-mono block mb-1">Seu link está pronto:</span>
+                            <a :href="shortUrl" target="_blank" class="text-brandLight dark:text-brand font-bold text-xl md:text-2xl hover:underline break-all block mb-3">
+                                {{ shortUrl }}
+                            </a>
+                            <button @click="copiarLink" class="w-full md:w-auto border border-brandLight dark:border-brand text-brandLight dark:text-brand hover:bg-brand hover:text-white dark:hover:text-black px-6 py-2 rounded font-mono text-sm font-bold transition-colors">
+                                COPIAR LINK
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Cards de Funcionalidades Superior -->
-        <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <!-- Card 1: URLs -->
-            <div class="group relative overflow-hidden bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-all duration-300 ease-out hover:-translate-y-2">
-                <!-- Linha do reflexo espelhado -->
-                <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 dark:via-white/10 to-transparent skew-x-12 transition-transform duration-1000 ease-out group-hover:translate-x-full"></div>
-                
-                <img src="/assets/url_iconsite2.png" alt="Ícone de URL" class="w-11 h-11 mb-4 relative z-10">
-                <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white relative z-10">URLs</h3>
-                <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed relative z-10">Cole seu link e receba um URL encurtado.</p>
-            </div>
-
-            <!-- Card 2: QR Code -->
-            <div class="group relative overflow-hidden bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-all duration-300 ease-out hover:-translate-y-2">
-                <!-- Linha do reflexo espelhado -->
-                <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 dark:via-white/10 to-transparent skew-x-12 transition-transform duration-1000 ease-out group-hover:translate-x-full"></div>
-                
-                <img src="/assets/qr_icon.png" alt="Ícone de QR Code" class="w-10 h-10 mb-4 relative z-10">
-                <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white relative z-10">QR Code</h3>
-                <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed relative z-10">Gere QR Codes para seus links encurtados e compartilhe facilmente.</p>
-            </div>
-
-            <!-- Card 3: Métricas -->
-            <div class="group relative overflow-hidden bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-all duration-300 ease-out hover:-translate-y-2">
-                <!-- Linha do reflexo espelhado -->
-                <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 dark:via-white/10 to-transparent skew-x-12 transition-transform duration-1000 ease-out group-hover:translate-x-full"></div>
-                
-                <img src="/assets/grafico_icon.png" alt="Ícone de Gráfico" class="w-10 h-10 mb-4 relative z-10">
-                <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white relative z-10">Métricas</h3>
-                <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed relative z-10">Acompanhe o desempenho das suas URLs em tempo real.</p>
-            </div>
-        </div>
-
-
-        <!-- Cards de Funcionalidades -->
-        <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 pb-10">
-            <div class="group relative overflow-hidden bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-all duration-300 ease-out hover:-translate-y-2">
-                <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 dark:via-white/10 to-transparent skew-x-12 transition-transform duration-1000 ease-out group-hover:translate-x-full"></div>
-                <span class="text-brandLight dark:text-brand font-mono text-sm block mb-4">01</span>
-                <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Alta Performance</h3>
-                <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Desenvolvido em FastAPI. Cole, clique e copie em milissegundos. Sem páginas de carregamento, sem delay.</p>
-            </div>
-            <div class="group relative overflow-hidden bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-all duration-300 ease-out hover:-translate-y-2">
-                <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 dark:via-white/10 to-transparent skew-x-12 transition-transform duration-1000 ease-out group-hover:translate-x-full"></div>
-                <span class="text-brandLight dark:text-brand font-mono text-sm block mb-4">02</span>
-                <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Rastreio Inteligente</h3>
-                <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Identifica automaticamente o tipo de dispositivo (Mobile, Tablet ou Desktop) de quem clica no seu link.</p>
-            </div>
+            <!-- Cards de Funcionalidades Superior -->
+            <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <!-- Card 1: URLs -->
                 <div class="group relative overflow-hidden bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-all duration-300 ease-out hover:-translate-y-2">
-                <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 dark:via-white/10 to-transparent skew-x-12 transition-transform duration-1000 ease-out group-hover:translate-x-full"></div>
-                <span class="text-brandLight dark:text-brand font-mono text-sm block mb-4">03</span>
-                <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Orientado a Dados</h3>
-                <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Métricas transparentes e centralizadas. Acompanhe o desempenho das suas URLs em tempo real.</p>
-            </div>
-        </div>
+                    <!-- Linha do reflexo espelhado -->
+                    <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 dark:via-white/10 to-transparent skew-x-12 transition-transform duration-1000 ease-out group-hover:translate-x-full"></div>
+                    
+                    <img src="/assets/icon_card_url.png" alt="Ícone de URL" class="w-11 h-11 mb-4 relative z-10">
+                    <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white relative z-10">URLs</h3>
+                    <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed relative z-10">Cole seu link e receba um URL encurtado.</p>
+                </div>
 
-        <!-- Área de Estatísticas -->
-        <div class="w-full max-w-2xl border-t border-gray-200 dark:border-borderDark py-16">
-            <div class="text-center mb-8">
-                <h2 class="text-2xl font-bold mb-2 text-slate-900 dark:text-white">Painel de Métricas</h2>
-                <p class="text-slate-500 dark:text-gray-500">Cole o código do seu link curto para visualizar o tráfego.</p>
-            </div>
-            
-            <div class="flex flex-col md:flex-row gap-4 mb-6">
-                <input type="text" id="statsInput" placeholder="Ex: aB3dE" 
-                    class="flex-grow bg-white dark:bg-transparent border border-gray-300 dark:border-borderDark text-slate-900 dark:text-white p-4 rounded-md focus:border-brand focus:outline-none font-mono text-center md:text-left transition-colors shadow-sm dark:shadow-none">
-                <button onclick="verStats()" 
-                    class="bg-slate-800 dark:bg-white text-white dark:text-black font-bold uppercase tracking-widest px-8 py-4 rounded-md hover:opacity-90 transition shadow-sm hover:-translate-y-1">
-                    Ver Dados
-                </button>
+                <!-- Card 2: QR Code -->
+                <div class="group relative overflow-hidden bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-all duration-300 ease-out hover:-translate-y-2">
+                    <!-- Linha do reflexo espelhado -->
+                    <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 dark:via-white/10 to-transparent skew-x-12 transition-transform duration-1000 ease-out group-hover:translate-x-full"></div>
+                    
+                    <img src="/assets/icon_card_qrcode.png" alt="Ícone de QR Code" class="w-10 h-10 mb-4 relative z-10">
+                    <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white relative z-10">QR Code</h3>
+                    <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed relative z-10">Gere QR Codes para seus links encurtados e compartilhe facilmente.</p>
+                </div>
+
+                <!-- Card 3: Métricas -->
+                <div class="group relative overflow-hidden bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-all duration-300 ease-out hover:-translate-y-2">
+                    <!-- Linha do reflexo espelhado -->
+                    <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 dark:via-white/10 to-transparent skew-x-12 transition-transform duration-1000 ease-out group-hover:translate-x-full"></div>
+                    
+                    <img src="/assets/icon_card_graphic.png" alt="Ícone de Gráfico" class="w-10 h-10 mb-4 relative z-10">
+                    <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white relative z-10">Métricas</h3>
+                    <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed relative z-10">Acompanhe o desempenho das suas URLs em tempo real.</p>
+                </div>
             </div>
 
-            <!-- Resultado das Estatísticas -->
-            <div id="statsResult" class="hidden bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-6 rounded-lg w-full shadow-sm dark:shadow-none transition-colors">
-                <div class="flex justify-between items-end border-b border-gray-200 dark:border-borderDark pb-4 mb-6">
-                    <div>
-                        <span class="text-slate-500 dark:text-gray-400 text-sm font-mono block">Total de Cliques</span>
-                        <span id="totalClicks" class="text-4xl font-bold text-brandLight dark:text-brand">0</span>
-                    </div>
+
+            <!-- Cards de Funcionalidades -->
+            <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 pb-10">
+                <div class="group relative overflow-hidden bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-all duration-300 ease-out hover:-translate-y-2">
+                    <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 dark:via-white/10 to-transparent skew-x-12 transition-transform duration-1000 ease-out group-hover:translate-x-full"></div>
+                    <span class="text-brandLight dark:text-brand font-mono text-sm block mb-4">01</span>
+                    <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Alta Performance</h3>
+                    <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Desenvolvido em FastAPI. Cole, clique e copie em milissegundos. Sem páginas de carregamento, sem delay.</p>
+                </div>
+                <div class="group relative overflow-hidden bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-all duration-300 ease-out hover:-translate-y-2">
+                    <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 dark:via-white/10 to-transparent skew-x-12 transition-transform duration-1000 ease-out group-hover:translate-x-full"></div>
+                    <span class="text-brandLight dark:text-brand font-mono text-sm block mb-4">02</span>
+                    <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Rastreio Inteligente</h3>
+                    <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Identifica automaticamente o tipo de dispositivo (Mobile, Tablet ou Desktop) de quem clica no seu link.</p>
+                </div>
+                    <div class="group relative overflow-hidden bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-all duration-300 ease-out hover:-translate-y-2">
+                    <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/5 dark:via-white/10 to-transparent skew-x-12 transition-transform duration-1000 ease-out group-hover:translate-x-full"></div>
+                    <span class="text-brandLight dark:text-brand font-mono text-sm block mb-4">03</span>
+                    <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Orientado a Dados</h3>
+                    <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Métricas transparentes e centralizadas. Acompanhe o desempenho das suas URLs em tempo real.</p>
+                </div>
+            </div>
+
+            <!-- Área de Estatísticas (Bento Box Alargada) -->
+            <div class="w-full max-w-5xl border-t border-gray-200 dark:border-borderDark py-16 mx-auto">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold mb-2 text-slate-900 dark:text-white">Painel de Métricas</h2>
+                    <p class="text-slate-500 dark:text-gray-500">Cole o código do seu link curto para visualizar o tráfego.</p>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                    <div>
-                        <span class="text-slate-500 dark:text-gray-400 text-sm font-mono block mb-3">Acessos por Dispositivo:</span>
-                        <ul id="deviceList" class="space-y-2 font-mono text-sm text-slate-600 dark:text-gray-300">
-                            <!-- Preenchido via JS -->
-                        </ul>
+                <div class="flex flex-col md:flex-row gap-4 mb-6 max-w-2xl mx-auto">
+                    <input type="text" v-model="codigoInput" @keyup.enter="carregarMetricas" placeholder="Ex: aB3dE" 
+                        class="flex-grow bg-white dark:bg-transparent border border-gray-300 dark:border-borderDark text-slate-900 dark:text-white p-4 rounded-md focus:border-brand focus:outline-none font-mono text-center md:text-left transition-colors shadow-sm dark:shadow-none">
+                    <button @click="carregarMetricas" 
+                        class="bg-slate-800 dark:bg-white text-white dark:text-black font-bold uppercase tracking-widest px-8 py-4 rounded-md hover:opacity-90 transition shadow-sm hover:-translate-y-1">
+                        Ver Dados
+                    </button>
+                </div>
+
+                <!-- Painel Bento Box -->
+                <div v-if="dadosMetricas" class="bg-card border border-borderDark p-8 rounded-xl w-full shadow-lg transition-colors mt-8">
+                    <div class="flex justify-between items-start border-b border-borderDark pb-6 mb-8">
+                        <div>
+                            <span class="text-slate-500 text-xs font-mono uppercase tracking-widest block mb-1">Total de Acessos</span>
+                            <span class="text-5xl font-bold text-brand">{{ dadosMetricas.total_clicks }}</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-slate-500 text-sm font-mono block">lnk./{{ codigoInput.split('/').pop() }}</span>
+                        </div>
                     </div>
                     
-                    <div class="w-full h-48 relative">
-                        <canvas id="deviceChart"></canvas>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="bg-[#111111] border border-borderDark p-6 rounded-lg flex flex-col h-[350px]">
+                            <span class="text-slate-400 text-xs font-mono uppercase tracking-widest block mb-4">Dispositivo</span>
+                            <div class="flex-grow relative"><canvas id="deviceChart"></canvas></div>
+                        </div>
+                        <div class="bg-[#111111] border border-borderDark p-6 rounded-lg flex flex-col h-[350px]">
+                            <span class="text-slate-400 text-xs font-mono uppercase tracking-widest block mb-4">Navegador</span>
+                            <div class="flex-grow relative"><canvas id="browserChart"></canvas></div>
+                        </div>
+                        <div class="bg-[#111111] border border-borderDark p-6 rounded-lg flex flex-col h-[350px]">
+                            <span class="text-slate-400 text-xs font-mono uppercase tracking-widest block mb-4">Sistema Operacional</span>
+                            <div class="flex-grow relative"><canvas id="osChart"></canvas></div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Seção de Dúvidas Frequentes (FAQ) -->
-        <div class="w-full max-w-2xl border-t border-gray-200 dark:border-borderDark pt-16 pb-2">
-            <div class="text-center mb-10">
-                <h2 class="text-2xl font-bold mb-2 text-slate-900 dark:text-white">Dúvidas Frequentes</h2>
-                <p class="text-slate-500 dark:text-gray-400">Entenda como o Jet.URL processa seus links e dados.</p>
+            
+            <!-- Seção de Dúvidas Frequentes (FAQ) -->
+            <div class="w-full max-w-2xl border-t border-gray-200 dark:border-borderDark pt-16 pb-2">
+                <div class="text-center mb-10">
+                    <h2 class="text-2xl font-bold mb-2 text-slate-900 dark:text-white">Dúvidas Frequentes</h2>
+                    <p class="text-slate-500 dark:text-gray-400">Entenda como o Jet.URL processa seus links e dados.</p>
+                </div>
+                
+                <div class="space-y-4">
+                    <!-- Pergunta 1 -->
+                    <div class="bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-6 rounded-lg shadow-sm dark:shadow-none hover:border-brandLight dark:hover:border-brand/50 transition-colors">
+                        <h4 class="font-bold text-slate-900 dark:text-white mb-2">Como o rastreamento de dispositivos funciona?</h4>
+                        <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Nosso backend analisa o cabeçalho (User-Agent) da requisição no momento do clique, extraindo apenas a categoria do dispositivo (Mobile, Desktop ou Tablet), garantindo performance e privacidade, sem coletar dados sensíveis.</p>
+                    </div>
+                    <!-- Pergunta 2 -->
+                    <div class="bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-6 rounded-lg shadow-sm dark:shadow-none hover:border-brandLight dark:hover:border-brand/50 transition-colors">
+                        <h4 class="font-bold text-slate-900 dark:text-white mb-2">Os links e métricas expiram?</h4>
+                        <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Não. Uma vez gerado, o link curto e seu respectivo QR Code permanecem ativos permanentemente, armazenados e roteados através de nosso banco de dados relacional.</p>
+                    </div>
+                    <!-- Pergunta 3 -->
+                    <div class="bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-6 rounded-lg shadow-sm dark:shadow-none hover:border-brandLight dark:hover:border-brand/50 transition-colors">
+                        <h4 class="font-bold text-slate-900 dark:text-white mb-2">Posso exportar os dados de clique?</h4>
+                        <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Sim. O Jet.URL possui uma integração voltada para pipelines de ETL. Se você é um desenvolvedor, pode acessar a rota de exportação para baixar todo o banco em formato CSV.</p>
+                    </div>
+                    <!-- Pergunta 4 -->
+                    <div class="bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-6 rounded-lg shadow-sm dark:shadow-none hover:border-brandLight dark:hover:border-brand/50 transition-colors">
+                        <h4 class="font-bold text-slate-900 dark:text-white mb-2">O serviço é gratuito?</h4>
+                        <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Sim, o Jet.URL oferece um serviço gratuito com nossas funcionalidades.</p>
+                    </div>
+                </div>
             </div>
             
-            <div class="space-y-4">
-                <!-- Pergunta 1 -->
-                <div class="bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-6 rounded-lg shadow-sm dark:shadow-none hover:border-brandLight dark:hover:border-brand/50 transition-colors">
-                    <h4 class="font-bold text-slate-900 dark:text-white mb-2">Como o rastreamento de dispositivos funciona?</h4>
-                    <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Nosso backend analisa o cabeçalho (User-Agent) da requisição no momento do clique, extraindo apenas a categoria do dispositivo (Mobile, Desktop ou Tablet), garantindo performance e privacidade, sem coletar dados sensíveis.</p>
+        </main>
+
+        <!-- Footer -->
+        <footer class="w-full border-t border-gray-200 dark:border-borderDark bg-slate-50 dark:bg-dark py-12 px-4 transition-colors">
+            <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center gap-3 opacity-80 hover:opacity-100 transition-opacity">
+                    <!-- Logo Footer -->
+                    <img :src="isDarkTheme ? '/assets/logo-jet.url_darkmode.png' : '/assets/logo-jet.url_lightmode.png'" 
+                         alt="Logo Jet.URL" class="h-6 w-auto grayscale transition-all duration-300">
                 </div>
-                <!-- Pergunta 2 -->
-                <div class="bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-6 rounded-lg shadow-sm dark:shadow-none hover:border-brandLight dark:hover:border-brand/50 transition-colors">
-                    <h4 class="font-bold text-slate-900 dark:text-white mb-2">Os links e métricas expiram?</h4>
-                    <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Não. Uma vez gerado, o link curto e seu respectivo QR Code permanecem ativos permanentemente, armazenados e roteados através de nosso banco de dados relacional.</p>
-                </div>
-                <!-- Pergunta 3 -->
-                <div class="bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-6 rounded-lg shadow-sm dark:shadow-none hover:border-brandLight dark:hover:border-brand/50 transition-colors">
-                    <h4 class="font-bold text-slate-900 dark:text-white mb-2">Posso exportar os dados de clique?</h4>
-                    <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Sim. O Jet.URL possui uma integração voltada para pipelines de ETL. Se você é um desenvolvedor, pode acessar a rota de exportação para baixar todo o banco em formato CSV.</p>
-                </div>
-                <!-- Pergunta 4 -->
-                <div class="bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-6 rounded-lg shadow-sm dark:shadow-none hover:border-brandLight dark:hover:border-brand/50 transition-colors">
-                    <h4 class="font-bold text-slate-900 dark:text-white mb-2">O serviço é gratuito?</h4>
-                    <p class="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">Sim, o Jet.URL oferece um serviço gratuito com nossas funcionalidades.</p>
+                <div class="flex flex-wrap justify-center gap-6 text-sm font-mono">
+                    <a href="https://github.com/AlysonMLL" target="_blank" class="text-slate-500 dark:text-gray-400 hover:text-brandLight dark:hover:text-brand transition-colors">GitHub</a>
+                    <a href="https://linkedin.com/in/alysonmll" target="_blank" class="text-slate-500 dark:text-gray-400 hover:text-brandLight dark:hover:text-brand transition-colors">LinkedIn</a>
+                    <a href="/exportar-dados" target="_blank" class="text-slate-500 dark:text-gray-400 hover:text-brandLight dark:hover:text-brand transition-colors">Extrair Dados (CSV)</a>
                 </div>
             </div>
-        </div>
-    </main>
+            <div class="max-w-4xl mx-auto mt-8 pt-8 border-t border-gray-200 dark:border-borderDark flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400 dark:text-gray-500 text-center md:text-left">
+                <p>&copy; 2026 Alyson Medeiros. Todos os direitos reservados.</p>
+                <p class="font-mono">Desenvolvido com Python, FastAPI & Vue.js</p>
+            </div>
+        </footer>
 
-    <script>
-        // === LÓGICA DO TEMA CLARO/ESCURO ===
-        function toggleTheme() {
-            const htmlEl = document.documentElement;
-            const iconEl = document.getElementById('themeIcon');
-            
-            // Alterna a classe 'dark' no HTML
-            const isDark = htmlEl.classList.toggle('dark');
-            
-            // Troca o ícone apontando para a sua pasta src/assets
-            iconEl.src = isDark ? '/assets/sun_icon.png' : '/assets/lua_icon.png';
-            
-            // Se o gráfico já estiver na tela, atualiza as cores dele dinamicamente
-            if (myChart) {
-                myChart.data.datasets[0].borderColor = isDark ? '#111111' : '#ffffff';
-                myChart.options.plugins.legend.labels.color = isDark ? '#9ca3af' : '#475569';
-                myChart.update();
-            }
-        }
+    </div> <!-- Fim do #app -->
 
-        // === EFEITO DE DIGITAÇÃO NO CAMPO DE URL ===
-        const placeholderText = 'cole sua URL aqui...';
-        let placeholderIndex = 0;
-        let placeholderCursorVisible = true;
+    <!-- Importação do nosso Frontend Modularizado -->
+    <script type="module" src="/frontend/app.js"></script>
 
-        function renderUrlPlaceholder() {
-            const urlInput = document.getElementById('urlInput');
-            const typedText = placeholderText.slice(0, placeholderIndex);
-
-            if (!urlInput.value) {
-                urlInput.placeholder = `${typedText}${placeholderCursorVisible ? '|' : ''}`;
-            }
-        }
-
-        function typeUrlPlaceholder() {
-            const urlInput = document.getElementById('urlInput');
-
-            if (urlInput.value) {
-                urlInput.placeholder = placeholderText;
-                placeholderIndex = 0;
-                setTimeout(typeUrlPlaceholder, 300);
-                return;
-            }
-
-            renderUrlPlaceholder();
-            placeholderIndex += 1;
-
-            if (placeholderIndex > placeholderText.length) {
-                setTimeout(() => {
-                    placeholderIndex = 0;
-                    typeUrlPlaceholder();
-                }, 4000);
-                return;
-            }
-
-            setTimeout(typeUrlPlaceholder, 90);
-        }
-
-        setInterval(() => {
-            placeholderCursorVisible = !placeholderCursorVisible;
-            renderUrlPlaceholder();
-        }, 500);
-
-        typeUrlPlaceholder();
-
-        
-        async function encurtar() {
-            const url = document.getElementById('urlInput').value;
-            if(!url) return alert('Por favor, cole uma URL válida.');
-            
-            try {
-                const res = await fetch(`/shorten?original_url=${encodeURIComponent(url)}`, { method: 'POST' });
-                if (!res.ok) throw new Error('Erro ao encurtar');
-                
-                const data = await res.json();
-                
-                const linkEl = document.getElementById('shortLink');
-                linkEl.href = data.short_url;
-                linkEl.textContent = data.short_url;
-                
-                document.getElementById('qrCodeImg').src = data.qr_code;
-                
-                document.getElementById('shortResultArea').classList.remove('hidden');
-                document.getElementById('urlInput').value = ''; 
-            } catch (error) {
-                alert('Erro ao processar a URL. Tente novamente.');
-            }
-        }
-
-        async function copiarLink() {
-            const linkText = document.getElementById('shortLink').textContent;
-            await navigator.clipboard.writeText(linkText);
-            alert('Link copiado para a área de transferência!');
-        }
-
-        let myChart = null; 
-
-        async function verStats() {
-            let code = document.getElementById('statsInput').value.trim();
-            if(!code) return alert('Digite o código do link.');
-            
-            if (code.includes('/')) {
-                code = code.split('/').pop();
-            }
-            
-            try {
-                const res = await fetch(`/stats/${code}`);
-                const data = await res.json();
-                
-                if (data.mensagem) {
-                    alert(data.mensagem);
-                    return;
-                }
-                
-                document.getElementById('totalClicks').textContent = data.total_clicks || 0;
-                
-                const listEl = document.getElementById('deviceList');
-                listEl.innerHTML = ''; 
-                
-                const labels = [];
-                const chartData = [];
-                
-                Object.keys(data).forEach(key => {
-                    if (key !== 'total_clicks') {
-                        const li = document.createElement('li');
-                        li.className = "flex justify-between border-b border-gray-200 dark:border-borderDark/50 pb-2 transition-colors";
-                        li.innerHTML = `<span>> ${key}</span> <span class="text-slate-900 dark:text-white font-bold">${data[key]}</span>`;
-                        listEl.appendChild(li);
-                        
-                        labels.push(key);
-                        chartData.push(data[key]);
-                    }
-                });
-                
-                document.getElementById('statsResult').classList.remove('hidden');
-                renderChart(labels, chartData);
-                
-            } catch (error) {
-                alert('Erro ao buscar os dados.');
-            }
-        }
-
-        function renderChart(labels, data) {
-            const ctx = document.getElementById('deviceChart').getContext('2d');
-            const isDark = document.documentElement.classList.contains('dark');
-            
-            if (myChart) {
-                myChart.destroy();
-            }
-            
-            myChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: ['#e6c169', '#333333', '#888888'],
-                        borderColor: isDark ? '#111111' : '#ffffff',
-                        borderWidth: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'right',
-                            labels: {
-                                color: isDark ? '#9ca3af' : '#475569',
-                                font: { family: 'ui-monospace, monospace' }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    </script>
 </body>
-
-<!-- Footer Estratégico -->
-    <footer class="w-full border-t border-gray-200 dark:border-borderDark bg-slate-50 dark:bg-dark py-12 px-4 transition-colors">
-        <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-            
-            <!-- Branding no Rodapé -->
-            <div class="flex items-center gap-3 opacity-80 hover:opacity-100 transition-opacity">
-                <img src="/assets/icon_logo.png" alt="Logo do Jet.URL" class="w-8 h-8 grayscale">
-                <span class="text-slate-700 dark:text-gray-300 font-mono text-lg font-bold tracking-tight">Jet.URL</span>
-            </div>
-
-            <!-- Links de Portfólio -->
-            <div class="flex flex-wrap justify-center gap-6 text-sm font-mono">
-                <a href="https://github.com/AlysonMLL" target="_blank" class="text-slate-500 dark:text-gray-400 hover:text-brandLight dark:hover:text-brand transition-colors">GitHub</a>
-                <a href="https://linkedin.com/in/alysonmll" target="_blank" class="text-slate-500 dark:text-gray-400 hover:text-brandLight dark:hover:text-brand transition-colors">LinkedIn</a>
-                <a href="/exportar-dados" target="_blank" class="text-slate-500 dark:text-gray-400 hover:text-brandLight dark:hover:text-brand transition-colors">Extrair Dados (CSV)</a>
-            </div>
-        </div>
-        
-        
-        <div class="max-w-4xl mx-auto mt-8 pt-8 border-t border-gray-200 dark:border-borderDark flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400 dark:text-gray-500 text-center md:text-left">
-            <p>&copy; 2026 Alyson Medeiros. Todos os direitos reservados.</p>
-            <p class="font-mono">Desenvolvido com Python, FastAPI & Tailwind</p>
-        </div>
-    </footer>
 </html>
