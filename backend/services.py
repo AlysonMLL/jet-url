@@ -14,17 +14,26 @@ from user_agents import parse
 from fastapi.responses import StreamingResponse
 from backend import crud
 from backend import utils
+from fastapi import HTTPException
 
-def process_shorten_url(original_url: str, base_url: str):
-    """Verifica se a URL já existe, se não, cria. Depois gera o QR Code."""
-    # 1. Checa se já existe
-    short_code = crud.get_url_by_original(original_url)
+def process_shorten_url(original_url: str, base_url: str, custom_alias: str = None):
+    """Gera o link curto, respeitando o apelido personalizado se fornecido."""
     
-    # 2. Se não existe, gera um novo e salva
-    if not short_code:
-        short_code = utils.generate_short_code()
+    if custom_alias:
+        # REGRA 1: Usuário quer um apelido personalizado
+        if crud.check_code_exists(custom_alias):
+            raise HTTPException(status_code=400, detail="Este apelido já está em uso. Tente outro.")
+        
+        short_code = custom_alias
         crud.create_url(original_url, short_code)
         
+    else:
+        # REGRA 2: Usuário não mandou apelido (Fluxo Normal)
+        short_code = crud.get_url_by_original(original_url)
+        if not short_code:
+            short_code = utils.generate_short_code()
+            crud.create_url(original_url, short_code)
+            
     short_url = f"{base_url}{short_code}"
     qr_data_uri = utils.generate_qr_base64(short_url)
     

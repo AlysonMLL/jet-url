@@ -85,3 +85,12 @@ def get_all_export_data():
     dados = cursor.fetchall()
     conn.close()
     return dados
+
+def check_code_exists(short_code: str) -> bool:
+    """Verifica se um código ou apelido já existe no banco."""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT 1 FROM urls WHERE short_code = %s", (short_code,))
+    exists = cursor.fetchone() is not None
+    conn.close()
+    return exists
