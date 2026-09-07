@@ -70,11 +70,20 @@
             <div class="w-full max-w-2xl mb-16">
                 <!-- Input Principal -->
                 <div class="flex flex-col md:flex-row gap-4">
-                    <input type="url" v-model="urlInput" @keyup.enter="processarEncurtamento" :placeholder="placeholderAnimado" 
-                        class="flex-grow bg-white dark:bg-transparent border border-gray-300 dark:border-borderDark text-slate-900 dark:text-white p-4 rounded-md focus:border-brand focus:outline-none font-mono placeholder-gray-400 dark:placeholder-gray-600 transition-colors shadow-sm dark:shadow-none">
+                    <!-- Container Relative para ancorar o botão -->
+                    <div class="relative flex-grow flex items-center">
+                        <!-- Nota: Adicionei pr-12 para o texto não ficar por baixo do ícone -->
+                        <input type="url" v-model="urlInput" @keyup.enter="processarEncurtamento" :placeholder="placeholderAnimado" 
+                            class="w-full bg-white dark:bg-transparent border border-gray-300 dark:border-borderDark text-slate-900 dark:text-white p-4 pr-12 rounded-md focus:border-brand focus:outline-none font-mono placeholder-gray-400 dark:placeholder-gray-600 transition-colors shadow-sm dark:shadow-none">
+                        
+                        <!-- Botão de Colar -->
+                        <button @click="colarTexto('url')" class="absolute right-4 text-slate-400 hover:text-brandLight dark:hover:text-brand transition-colors" title="Colar link">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                        </button>
+                    </div>
                     
                     <button @click="processarEncurtamento" :disabled="carregando" 
-                        class="bg-brandLight dark:bg-brand text-white dark:text-black font-bold uppercase tracking-widest px-8 py-4 rounded-md hover:-translate-y-1 hover:opacity-90 transition shadow-[0_0_15px_rgba(230,193,105,0.2)] disabled:opacity-50 disabled:hover:translate-y-0">
+                        class="bg-brandLight dark:bg-brand text-white dark:text-black font-bold uppercase tracking-widest px-8 py-4 rounded-md hover:-translate-y-1 hover:opacity-90 transition shadow-[0_0_15px_rgba(230,193,105,0.2)] disabled:opacity-50 disabled:hover:translate-y-0 shrink-0">
                         {{ carregando ? 'Processando...' : 'Encurtar' }}
                     </button>
                 </div>
@@ -98,6 +107,8 @@
                         Estipular Data
                     </label>
                 </div>
+
+                
 
                 <!-- Painel de Configuração de Tempo (Expande suavemente) -->
                 <div v-if="estipularData" class="mt-4 p-6 border border-gray-300 dark:border-borderDark rounded-md bg-white dark:bg-card/50 shadow-sm w-full transition-all animate-fade-in">
@@ -154,6 +165,129 @@
                     </div>
                 </div>
             </div>
+
+
+            <!-- 2. NOVA SEÇÃO: QR CODE PERSONALIZADO (Design Fiel ao Mockup) -->
+            <div class="w-full max-w-5xl mb-20 animate-fade-in">
+                <div class="bg-white dark:bg-card border border-gray-200 dark:border-borderDark rounded-xl p-8 md:p-10 shadow-lg">
+                    
+                    <!-- Título -->
+                    <div class="mb-10 text-center md:text-left">
+                        <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-3 tracking-tight">QR Code <span class="text-brandLight dark:text-brand">personalizado</span></h2>
+                        <p class="text-slate-500 dark:text-gray-400 text-sm md:text-base leading-relaxed max-w-3xl">
+                            Gere o QR sempre com o link já encurtado: menos caracteres significam menos módulos no código, resultando em um visual mais limpo, leitura mais rápida e escaneamento confiável até a distâncias maiores. Personalize com as cores que desejar.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                        <!-- Lado Esquerdo: Controles -->
+                        <div class="lg:col-span-7 flex flex-col gap-8">
+                            
+                            <!-- Conteúdo do QR (Input) -->
+                            <div>
+                                <span class="text-xs font-mono text-slate-500 uppercase tracking-widest block mb-3">Conteúdo do QR</span>
+                                <div class="relative w-full flex items-center">
+                                    <!-- pr-12 para proteger o espaço do botão -->
+                                    <input type="text" v-model="conteudoQR" @input="atualizarQR"
+                                        class="w-full bg-white dark:bg-[#0a0a0a] border border-gray-300 dark:border-borderDark text-slate-900 dark:text-white p-4 pr-12 rounded-md focus:outline-none focus:border-brand font-mono text-sm shadow-inner transition-colors">
+                                    
+                                    <!-- Botão de Colar -->
+                                    <button @click="colarTexto('qr')" class="absolute right-4 text-slate-400 hover:text-brandLight dark:hover:text-brand transition-colors" title="Colar conteúdo">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Paleta de Cores -->
+                            <div>
+                                <span class="text-xs font-mono text-slate-500 uppercase tracking-widest block mb-3">Paleta</span>
+                                <div class="flex flex-wrap gap-4">
+                                    
+                                    <button @click="selecionarPaleta('Clássico')" :class="paletaAtiva === 'Clássico' ? 'border-brandLight text-brandLight dark:border-brand dark:text-brand bg-yellow-50 dark:bg-brand/10 shadow-[0_0_10px_rgba(243,191,67,0.2)]' : 'border-gray-300 dark:border-borderDark text-slate-500 hover:border-slate-400 dark:hover:border-slate-500'" class="px-6 py-3 border rounded-md font-mono text-sm transition-all flex items-center gap-3">
+                                        <span class="w-4 h-4 block bg-white border border-gray-400 rounded-sm"></span> Clássico
+                                    </button>
+                                    <button @click="selecionarPaleta('Invertido')" :class="paletaAtiva === 'Invertido' ? 'border-brandLight text-brandLight dark:border-brand dark:text-brand bg-yellow-50 dark:bg-brand/10 shadow-[0_0_10px_rgba(243,191,67,0.2)]' : 'border-gray-300 dark:border-borderDark text-slate-500 hover:border-slate-400 dark:hover:border-slate-500'" class="px-6 py-3 border rounded-md font-mono text-sm transition-all flex items-center gap-3">
+                                        <span class="w-4 h-4 block bg-black border border-gray-600 rounded-sm"></span> Invertido
+                                    </button>
+                                    <button @click="selecionarPaleta('Ouro')" :class="paletaAtiva === 'Ouro' ? 'border-brandLight text-brandLight dark:border-brand dark:text-brand bg-yellow-50 dark:bg-brand/10 shadow-[0_0_10px_rgba(243,191,67,0.2)]' : 'border-gray-300 dark:border-borderDark text-slate-500 hover:border-slate-400 dark:hover:border-slate-500'" class="px-6 py-3 border rounded-md font-mono text-sm transition-all flex items-center gap-3">
+                                        <span class="w-4 h-4 block bg-gradient-to-br from-[#f3bf43] to-[#C9A84C] border border-black/20 rounded-sm"></span> Ouro
+                                    </button>
+
+                                </div>
+                            </div>
+
+                            <!-- Seletores Manuais (Color Pickers) -->
+                            <div class="flex flex-col sm:flex-row gap-10">
+                                <div>
+                                    <span class="text-xs font-mono text-slate-500 uppercase tracking-widest block mb-3">Cor do Código</span>
+                                    <div class="flex items-center gap-4">
+                                        <!-- Truque CSS para esconder a borda padrão do input color e deixar estiloso -->
+                                        <div class="relative w-12 h-12 rounded-md overflow-hidden border border-gray-300 dark:border-borderDark cursor-pointer shadow-sm">
+                                            <input type="color" v-model="qrFill" @input="() => { limparPaleta(); atualizarQR(); }" class="absolute -top-2 -left-2 w-16 h-16 cursor-pointer bg-transparent border-0 p-0 outline-none">
+                                        </div>
+                                        <div class="w-36 shrink-0">
+                                            <span class="block text-sm font-bold text-slate-900 dark:text-white uppercase whitespace-nowrap">{{ qrFill }}</span>
+                                            <span class="block text-xs font-mono text-slate-500 whitespace-nowrap">{{ rgbFill }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="text-xs font-mono text-slate-500 uppercase tracking-widest block mb-3">Cor do Fundo</span>
+                                    <div class="flex items-center gap-4">
+                                        <div class="relative w-12 h-12 rounded-md overflow-hidden border border-gray-300 dark:border-borderDark cursor-pointer shadow-sm">
+                                            <input type="color" v-model="qrBack" @input="() => { limparPaleta(); atualizarQR(); }" class="absolute -top-2 -left-2 w-16 h-16 cursor-pointer bg-transparent border-0 p-0 outline-none">
+                                        </div>
+                                        <div class="w-36 shrink-0">
+                                            <span class="block text-sm font-bold text-slate-900 dark:text-white uppercase whitespace-nowrap">{{ qrBack }}</span>
+                                            <span class="block text-xs font-mono text-slate-500 whitespace-nowrap">{{ rgbBack }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Área Visulal Fase 2 (Ícones e Emojis - Desativados) -->
+                            <div class="mt-4 opacity-50 pointer-events-none select-none border-t border-gray-200 dark:border-borderDark pt-8">
+                                <span class="text-xs font-mono text-slate-500 uppercase tracking-widest block mb-4">Ícones Mais Usados <span class="text-[10px] bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded ml-2">EM BREVE</span></span>
+                                <div class="flex flex-wrap gap-3 mb-6">
+                                    <div class="w-10 h-10 border border-gray-300 dark:border-borderDark rounded bg-transparent flex items-center justify-center text-slate-400">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+                                    </div>
+                                    <div class="w-10 h-10 border border-brandLight dark:border-brand rounded bg-yellow-50 dark:bg-brand/10 flex items-center justify-center text-brandLight dark:text-brand shadow-[0_0_10px_rgba(243,191,67,0.2)]">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                                    </div>
+                                    <!-- Outros quadrados mockados -->
+                                    <div v-for="n in 8" :key="n" class="w-10 h-10 border border-gray-300 dark:border-borderDark rounded bg-transparent flex items-center justify-center text-slate-400">
+                                        <div class="w-4 h-4 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lado Direito: Preview do QR e Download -->
+                        <div class="lg:col-span-5 flex flex-col items-center justify-center h-full">
+                            <div class="bg-slate-50 dark:bg-[#0a0a0a] border border-gray-200 dark:border-borderDark rounded-xl p-8 w-full h-full flex flex-col items-center justify-center shadow-inner">
+                                
+                                <div class="w-56 h-56 md:w-64 md:h-64 bg-white rounded-lg flex items-center justify-center overflow-hidden mb-8 shadow-lg border border-gray-200 dark:border-borderDark relative transition-all duration-300">
+                                    <!-- A Imagem do QR Code -->
+                                    <img v-if="qrCodeUrl" :src="qrCodeUrl" alt="Preview do QR Code" class="w-full h-full object-cover">
+                                    
+                                    <!-- O Placeholder animado -->
+                                    <div v-else class="text-center p-4 flex flex-col items-center opacity-50">
+                                        <svg class="w-12 h-12 text-slate-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"></path></svg>
+                                        <span class="text-slate-500 font-mono text-xs uppercase tracking-widest text-center mt-2">Gere um link<br>para visualizar</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Botão de Download -->
+                                <button @click="baixarQRCode" :disabled="!qrCodeUrl" class="w-full bg-brandLight dark:bg-brand text-white dark:text-black font-bold uppercase tracking-widest py-4 rounded-md hover:opacity-90 transition-all duration-300 shadow-[0_0_15px_rgba(230,193,105,0.2)] disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed hover:-translate-y-1 disabled:hover:translate-y-0">
+                                    BAIXAR PNG
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
             <!-- Cards de Funcionalidades Superior -->
             <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">

@@ -62,6 +62,12 @@ const app = createApp({
         const dataInicio = ref('');
         const dataFim = ref('');
 
+        const personalizarQR = ref(false); // Controla se o painel aparece
+        const qrFill = ref('#000000');     // Cor do código
+        const qrBack = ref('#ffffff');     // Cor do fundo
+        const paletaAtiva = ref('Clássico');
+        const conteudoQR = ref('https://example.com'); // Input do QRCode
+
         // 1. Computa o preview em tempo real (limpando espaços e caracteres especiais)
         const urlPreview = computed(() => {
             if (!apelidoInput.value) return '';
@@ -115,6 +121,72 @@ const app = createApp({
             presetAtivo.value = ''; 
         };
 
+        // Converte código HEX (#FFFFFF) para RGB (rgb(255, 255, 255))
+        const hexToRgb = (hex) => {
+            let h = hex.replace('#', '');
+            if (h.length === 3) h = h.split('').map(c => c+c).join('');
+            const r = parseInt(h.substring(0,2), 16) || 0;
+            const g = parseInt(h.substring(2,4), 16) || 0;
+            const b = parseInt(h.substring(4,6), 16) || 0;
+            return `rgb(${r}, ${g}, ${b})`;
+        };
+
+        // Propriedades computadas para mostrar o texto na tela em tempo real
+        const rgbFill = computed(() => hexToRgb(qrFill.value));
+        const rgbBack = computed(() => hexToRgb(qrBack.value));
+
+        let timeoutQR;
+        let requisicaoQR = 0;
+        const atualizarQR = () => {
+            clearTimeout(timeoutQR);
+            const conteudo = conteudoQR.value;
+            const fill = qrFill.value;
+            const back = qrBack.value;
+            const idRequisicao = ++requisicaoQR;
+
+            timeoutQR = setTimeout(async () => {
+                if (!conteudo) return;
+                try {
+                    // Chama a nova rota do FastAPI
+                    const res = await fetch(`/api/qr?url=${encodeURIComponent(conteudo)}&fill=${encodeURIComponent(fill)}&back=${encodeURIComponent(back)}`);
+                    if (!res.ok) throw new Error(`Erro HTTP ${res.status}`);
+                    const data = await res.json();
+                    if (idRequisicao === requisicaoQR) {
+                        qrCodeUrl.value = data.qr_code;
+                    }
+                } catch (error) {
+                    console.error("Erro ao gerar QR Code dinâmico", error);
+                }
+            }, 500); // Espera meio segundo após a última tecla/clique
+        };
+
+        const selecionarPaleta = (paleta) => {
+            paletaAtiva.value = paleta;
+            if (paleta === 'Ouro') {
+                qrFill.value = '#C9A84C'; qrBack.value = '#0D0D0D';
+            } else if (paleta === 'Invertido') {
+                qrFill.value = '#FFFFFF'; qrBack.value = '#000000';
+            } else { 
+                qrFill.value = '#000000'; qrBack.value = '#FFFFFF';
+            }
+            atualizarQR(); //
+        };
+
+        const limparPaleta = () => {
+            // Se o usuário clicar no seletor de cor manualmente, desmarcamos o preset
+            paletaAtiva.value = ''; 
+        };
+
+        const baixarQRCode = () => {
+            if (!qrCodeUrl.value) return;
+            const link = document.createElement('a');
+            link.href = qrCodeUrl.value;
+            link.download = `qrcode_jeturl_${shortUrl.value.split('/').pop()}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+
         const processarEncurtamento = async () => {
             if (!urlInput.value) {
                 erroEncurtar.value = "Por favor, digite uma URL válida.";
@@ -125,13 +197,10 @@ const app = createApp({
             shortUrl.value = '';
 
             // Conversão de Data Local para Padrão ISO (UTC) do Banco de Dados
-            let startIso = '';
-            let expIso = '';
+            let startIso = ''; let expIso = '';
             if (estipularData.value) {
                 if (dataInicio.value) startIso = new Date(dataInicio.value).toISOString();
                 if (dataFim.value) expIso = new Date(dataFim.value).toISOString();
-                
-                // Validação amigável
                 if (startIso && expIso && new Date(dataInicio.value) >= new Date(dataFim.value)) {
                     erroEncurtar.value = "A data de término deve ser posterior à data de início.";
                     carregando.value = false;
@@ -140,20 +209,65 @@ const app = createApp({
             }
 
             try {
-                // Passa as datas para a API!
-                const dados = await encurtarLink(urlInput.value, apelidoInput.value, startIso, expIso);
+                // Passa as datas para a API
+                // Passa também as cores do QR Code
+                const dados = await encurtarLink(
+                    urlInput.value, apelidoInput.value, startIso, expIso, 
+                    qrFill.value, qrBack.value
+                );
+                
                 shortUrl.value = dados.short_url;
                 qrCodeUrl.value = dados.qr_code;
+                conteudoQR.value = dados.short_url;
                 
                 urlInput.value = ''; apelidoInput.value = ''; 
                 // Opcional: resetar as datas após sucesso
-                // estipularData.value = false; 
             } catch (error) {
                 erroEncurtar.value = error.message;
             } finally {
                 carregando.value = false;
             }
         };
+
+        // const processarEncurtamento = async () => {
+        //     if (!urlInput.value) {
+        //         erroEncurtar.value = "Por favor, digite uma URL válida.";
+        //         return;
+        //     }
+        //     erroEncurtar.value = '';
+        //     carregando.value = true;
+        //     shortUrl.value = '';
+
+        //     // Conversão de Data Local para Padrão ISO (UTC) do Banco de Dados
+        //     let startIso = '';
+        //     let expIso = '';
+        //     if (estipularData.value) {
+        //         if (dataInicio.value) startIso = new Date(dataInicio.value).toISOString();
+        //         if (dataFim.value) expIso = new Date(dataFim.value).toISOString();
+                
+        //         // Validação amigável
+        //         if (startIso && expIso && new Date(dataInicio.value) >= new Date(dataFim.value)) {
+        //             erroEncurtar.value = "A data de término deve ser posterior à data de início.";
+        //             carregando.value = false;
+        //             return;
+        //         }
+        //     }
+
+        //     try {
+        //         // Passa as datas para a API!
+        //         const dados = await encurtarLink(urlInput.value, apelidoInput.value, startIso, expIso);
+        //         shortUrl.value = dados.short_url;
+        //         qrCodeUrl.value = dados.qr_code;
+                
+        //         urlInput.value = ''; apelidoInput.value = ''; 
+        //         // Opcional: resetar as datas após sucesso
+        //         // estipularData.value = false; 
+        //     } catch (error) {
+        //         erroEncurtar.value = error.message;
+        //     } finally {
+        //         carregando.value = false;
+        //     }
+        // };
 
         const carregarMetricas = async () => {
             let codigo = codigoInput.value.trim();
@@ -187,6 +301,24 @@ const app = createApp({
                 alert('Link copiado com sucesso!');
             } catch (err) {
                 alert('Falha ao copiar link.');
+            }
+        };
+
+        // --- FUNÇÃO DE COLAR TEXTO ---
+        const colarTexto = async (campo) => {
+            try {
+                // Acessa a área de transferência nativa do sistema operacional
+                const texto = await navigator.clipboard.readText();
+                
+                if (campo === 'url') {
+                    urlInput.value = texto;
+                } else if (campo === 'qr') {
+                    conteudoQR.value = texto;
+                    atualizarQR(); // Atualiza a imagem na mesma hora
+                }
+            } catch (err) {
+                console.error("Erro ao ler área de transferência", err);
+                alert('Não foi possível acessar a área de transferência. Verifique as permissões do navegador.');
             }
         };
 
@@ -232,7 +364,11 @@ const app = createApp({
             isDarkTheme,
             alternarTema, processarEncurtamento, carregarMetricas, copiarLink, 
             apelidoInput, urlPreview, estipularData, presetAtivo, dataInicio, dataFim, presetsTempo,
-            selecionarPreset, limparPreset
+            selecionarPreset, limparPreset,
+            personalizarQR, qrFill, qrBack, paletaAtiva, rgbFill, rgbBack,
+            selecionarPaleta, limparPaleta, baixarQRCode,
+            conteudoQR, atualizarQR,
+            colarTexto
         };
     }
 });

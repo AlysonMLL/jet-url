@@ -17,7 +17,7 @@ from backend import crud
 from backend import utils
 from fastapi import HTTPException
 
-def process_shorten_url(original_url: str, base_url: str, custom_alias: str = None, starts_at: datetime = None, expires_at: datetime = None):
+def process_shorten_url(original_url: str, base_url: str, custom_alias: str = None, starts_at: datetime = None, expires_at: datetime = None, qr_fill: str = "#000000", qr_back: str = "#FFFFFF"):
     """Gera o link curto com suporte a apelido e tempo de validade."""
     
     if custom_alias:
@@ -39,9 +39,10 @@ def process_shorten_url(original_url: str, base_url: str, custom_alias: str = No
             crud.create_url(original_url, short_code, starts_at, expires_at)
             
     short_url = f"{base_url}{short_code}"
+    
     return {
         "short_url": short_url,
-        "qr_code": utils.generate_qr_base64(short_url)
+        "qr_code": utils.generate_qr_base64(short_url, fill_color=qr_fill, back_color=qr_back)
     }
 
 def process_redirect(short_code: str, user_agent_string: str):

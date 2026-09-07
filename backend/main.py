@@ -22,7 +22,7 @@ from datetime import datetime
 
 
 from backend.database import init_db
-from backend import services
+from backend import services, utils
 
 app = FastAPI()
 
@@ -44,9 +44,11 @@ async def shorten_url(
     request: Request, 
     custom_alias: Optional[str] = None,
     starts_at: Optional[datetime] = None,
-    expires_at: Optional[datetime] = None
+    expires_at: Optional[datetime] = None,
+    qr_fill: Optional[str] = "#000000",
+    qr_back: Optional[str] = "#FFFFFF"
 ):
-    # Rota para CRIAR um link encurtado
+    # Rota para CRIAR um link encurtado com QR Code personalizável
     url_str = str(original_url)
     base_url = str(request.base_url)
     
@@ -54,8 +56,10 @@ async def shorten_url(
     if not is_local:
         base_url = base_url.replace("http://", "https://")
     
-    # Datas para services
-    resultado = services.process_shorten_url(url_str, base_url, custom_alias, starts_at, expires_at)
+    # Envio das cores recém-chegadas para o services
+    resultado = services.process_shorten_url(
+        url_str, base_url, custom_alias, starts_at, expires_at, qr_fill, qr_back
+    )
     return resultado
 
 @app.get("/stats/{short_code}")
@@ -78,3 +82,9 @@ async def redirect_url(short_code: str, request: Request):
         raise HTTPException(status_code=404, detail="Link não encontrado")
         
     return RedirectResponse(original_url)
+
+@app.get("/api/qr")
+async def gerar_qr_avulso(url: str, fill: str = "#000000", back: str = "#FFFFFF"):
+    """Rota independente para atualizar o QR Code em tempo real no frontend"""
+    qr_b64 = utils.generate_qr_base64(url, fill_color=fill, back_color=back)
+    return {"qr_code": qr_b64}
