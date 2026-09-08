@@ -46,7 +46,8 @@ async def shorten_url(
     starts_at: Optional[datetime] = None,
     expires_at: Optional[datetime] = None,
     qr_fill: Optional[str] = "#000000",
-    qr_back: Optional[str] = "#FFFFFF"
+    qr_back: Optional[str] = "#FFFFFF",
+    icon: Optional[str] = ""
 ):
     # Rota para CRIAR um link encurtado com QR Code personalizável
     url_str = str(original_url)
@@ -58,7 +59,7 @@ async def shorten_url(
     
     # Envio das cores recém-chegadas para o services
     resultado = services.process_shorten_url(
-        url_str, base_url, custom_alias, starts_at, expires_at, qr_fill, qr_back
+        url_str, base_url, custom_alias, starts_at, expires_at, qr_fill, qr_back, icon
     )
     return resultado
 
@@ -84,7 +85,7 @@ async def redirect_url(short_code: str, request: Request):
     return RedirectResponse(original_url)
 
 @app.get("/api/qr")
-async def gerar_qr_avulso(url: str, fill: str = "#000000", back: str = "#FFFFFF"):
+async def gerar_qr_avulso(url: str, fill: str = "#000000", back: str = "#FFFFFF", icon: str = ""):
     """Rota independente para atualizar o QR Code em tempo real no frontend"""
-    qr_b64 = utils.generate_qr_base64(url, fill_color=fill, back_color=back)
+    qr_b64 = utils.generate_qr_base64(url, fill_color=fill, back_color=back, icon_name=icon)
     return {"qr_code": qr_b64}

@@ -1,28 +1,61 @@
 """
 O que há aqui:
 - generate_short_code(length)
-- generate_qr_base64(url)
-
-Função do arquivo: Funções auxiliares (Helpers) para geração de strings 
-aleatórias e manipulação de imagens (QR Code em memória RAM).
+- get_icon_url(icon_id)
+- generate_qr_base64(url, fill, back, icon)
 """
+
 import random
 import string
 import qrcode
 import io
 import base64
+import urllib.request
+from PIL import Image, ImageDraw
 
 def generate_short_code(length=6):
     """Gera um código alfanumérico aleatório."""
     chars = string.ascii_letters + string.digits
     return ''.join(random.choice(chars) for _ in range(length))
 
-def generate_qr_base64(url: str, fill_color: str = "black", back_color: str = "white") -> str:
-    """Gera um QR Code customizado em memória RAM e devolve em Base64."""
+def get_icon_url(icon_id: str) -> str:
+    """Mapeia o ID do frontend para CDNs de alta disponibilidade voltados para desenvolvedores."""
     
-    # Cria o objeto QRCode com nível de correção Alto (High) 
+    # Repositório GitHub Raw (Não bloqueia requisições de backend) e Icons8
+    brands = {
+        "whatsapp": "https://raw.githubusercontent.com/WalkxCode/dashboard-icons/main/png/whatsapp.png",
+        "telegram": "https://raw.githubusercontent.com/WalkxCode/dashboard-icons/main/png/telegram.png",
+        "discord": "https://raw.githubusercontent.com/WalkxCode/dashboard-icons/main/png/discord.png",
+        "instagram": "https://raw.githubusercontent.com/WalkxCode/dashboard-icons/main/png/instagram.png",
+        "facebook": "https://raw.githubusercontent.com/WalkxCode/dashboard-icons/main/png/facebook.png",
+        "x": "https://raw.githubusercontent.com/WalkxCode/dashboard-icons/main/png/x.png",
+        "youtube": "https://raw.githubusercontent.com/WalkxCode/dashboard-icons/main/png/youtube.png",
+        "twitch": "https://raw.githubusercontent.com/WalkxCode/dashboard-icons/main/png/twitch.png",
+        "tiktok": "https://raw.githubusercontent.com/WalkxCode/dashboard-icons/main/png/tiktok.png",
+        "reddit": "https://raw.githubusercontent.com/WalkxCode/dashboard-icons/main/png/reddit.png",
+        "spotify": "https://raw.githubusercontent.com/WalkxCode/dashboard-icons/main/png/spotify.png",
+        "github": "https://raw.githubusercontent.com/WalkxCode/dashboard-icons/main/png/github.png",
+        "googledrive": "https://raw.githubusercontent.com/WalkxCode/dashboard-icons/main/png/google-drive.png",
+        "paypal": "https://raw.githubusercontent.com/WalkxCode/dashboard-icons/main/png/paypal.png",
+        "pix": "https://img.icons8.com/color/512/pix.png",
+        "mercadopago": "https://img.icons8.com/color/512/mercado-pago.png"
+    }
+    
+    if icon_id in brands:
+        return brands[icon_id]
+    
+    # Fallback para emojis via Twemoji (Removendo caracteres ocultos que causam 404)
+    try:
+        emoji_hex = "-".join(f"{ord(c):x}" for c in icon_id if f"{ord(c):x}" != "fe0f")
+        return f"https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/{emoji_hex}.png"
+    except:
+        return ""
+
+def generate_qr_base64(url: str, fill_color: str = "black", back_color: str = "white", icon_name: str = "") -> str:
+    """Gera o QR Code mesclando com o ícone no centro, com tratamento rigoroso de erros."""
+    
     qr = qrcode.QRCode(
-        version=1,
+        version=4, 
         error_correction=qrcode.constants.ERROR_CORRECT_H,
         box_size=10,
         border=4,
@@ -30,8 +63,43 @@ def generate_qr_base64(url: str, fill_color: str = "black", back_color: str = "w
     qr.add_data(url)
     qr.make(fit=True)
     
-    # Gerando a imagem aplicando as cores recebidas (Hexadecimal ou nome)
-    img = qr.make_image(fill_color=fill_color, back_color=back_color)
+    img = qr.make_image(fill_color=fill_color, back_color=back_color).convert("RGBA")
+    
+    if icon_name:
+        try:
+            icon_url = get_icon_url(icon_name)
+            if icon_url:
+                # Criando um User-Agent profissional para evitar bloqueios de CDN
+                req = urllib.request.Request(icon_url, headers={'User-Agent': 'JetURL-Backend/1.0 (Contact: admin@jet.url)'})
+                
+                with urllib.request.urlopen(req) as response:
+                    icon_data = response.read()
+                    logo = Image.open(io.BytesIO(icon_data)).convert("RGBA")
+                    
+                    # Garantia de compatibilidade para diferentes versões da biblioteca Pillow
+                    resample_filter = getattr(Image, 'Resampling', Image).LANCZOS
+                    
+                    basewidth = int(img.size[0] * 0.25)
+                    wpercent = (basewidth / float(logo.size[0]))
+                    hsize = int((float(logo.size[1]) * float(wpercent)))
+                    
+                    logo = logo.resize((basewidth, hsize), resample_filter)
+                    
+                    # Posicionamento central
+                    pos = ((img.size[0] - logo.size[0]) // 2, (img.size[1] - logo.size[1]) // 2)
+                    
+                    # Fundo de proteção (para a logo não se misturar nos pixels do QR Code)
+                    draw = ImageDraw.Draw(img)
+                    padding = 10
+                    bg_box = [pos[0] - padding, pos[1] - padding, pos[0] + logo.size[0] + padding, pos[1] + logo.size[1] + padding]
+                    draw.rectangle(bg_box, fill=back_color)
+                    
+                    # Colagem final usando o canal Alpha da logo como máscara
+                    img.paste(logo, pos, mask=logo)
+                    
+        except Exception as e:
+            print(f"⚠️ Erro ao inserir o ícone '{icon_name}': {e}")
+            pass
     
     buf = io.BytesIO()
     img.save(buf, format="PNG")

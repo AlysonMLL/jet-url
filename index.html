@@ -135,7 +135,7 @@
                     <div class="flex flex-col md:flex-row gap-6">
                         <div class="flex-1">
                             <span class="text-xs font-mono text-slate-500 uppercase tracking-widest block mb-2">Data de Início</span>
-                            <!-- Dica de mestre: o [color-scheme:dark] nativo do Tailwind arruma o ícone de calendário no Dark Mode -->
+                            <!-- O [color-scheme:dark] nativo do Tailwind arruma o ícone de calendário no Dark Mode -->
                             <input type="datetime-local" v-model="dataInicio" @input="limparPreset" 
                                 class="w-full bg-slate-50 dark:bg-[#111111] border border-gray-300 dark:border-borderDark text-slate-900 dark:text-white p-4 rounded-md focus:border-brand focus:outline-none font-mono text-sm [color-scheme:light] dark:[color-scheme:dark] transition-colors">
                         </div>
@@ -245,24 +245,44 @@
                                 </div>
                             </div>
 
-                            <!-- Área Visulal Fase 2 (Ícones e Emojis - Desativados) -->
-                            <div class="mt-4 opacity-50 pointer-events-none select-none border-t border-gray-200 dark:border-borderDark pt-8">
-                                <span class="text-xs font-mono text-slate-500 uppercase tracking-widest block mb-4">Ícones Mais Usados <span class="text-[10px] bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded ml-2">EM BREVE</span></span>
+                            
+                            <!-- Área Visual: Seleção de Ícones e Emojis -->
+                            <div class="mt-4 border-t border-gray-200 dark:border-borderDark pt-8 transition-all animate-fade-in">
+                                <span class="text-xs font-mono text-slate-500 uppercase tracking-widest block mb-4">Ícone Central do QR Code</span>
+                                
                                 <div class="flex flex-wrap gap-3 mb-6">
-                                    <div class="w-10 h-10 border border-gray-300 dark:border-borderDark rounded bg-transparent flex items-center justify-center text-slate-400">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
-                                    </div>
-                                    <div class="w-10 h-10 border border-brandLight dark:border-brand rounded bg-yellow-50 dark:bg-brand/10 flex items-center justify-center text-brandLight dark:text-brand shadow-[0_0_10px_rgba(243,191,67,0.2)]">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
-                                    </div>
-                                    <!-- Outros quadrados mockados -->
-                                    <div v-for="n in 8" :key="n" class="w-10 h-10 border border-gray-300 dark:border-borderDark rounded bg-transparent flex items-center justify-center text-slate-400">
-                                        <div class="w-4 h-4 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
-                                    </div>
+                                    
+                                    <!-- Botão "Limpar / Sem Ícone" -->
+                                    <button @click="selecionarIcone('')" 
+                                        :class="!iconeSelecionado ? 'border-brandLight text-brandLight dark:border-brand dark:text-brand bg-yellow-50 dark:bg-brand/10 shadow-[0_0_10px_rgba(243,191,67,0.2)]' : 'border-gray-300 dark:border-borderDark text-slate-400 hover:text-slate-600 dark:hover:text-gray-300'"
+                                        class="w-12 h-12 border rounded-md bg-transparent flex items-center justify-center transition-all cursor-pointer shadow-sm" title="Nenhum ícone">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+                                    </button>
+
+                                    <!-- Laço de Repetição Vue para Marcas e Emojis -->
+                                    <button v-for="icone in listaIcones" :key="icone.id"
+                                        @click="selecionarIcone(icone.id)"
+                                        :class="[
+                                            iconeSelecionado === icone.id 
+                                                ? 'border-brandLight text-brandLight dark:border-brand dark:text-brand bg-yellow-50 dark:bg-brand/10 shadow-[0_0_10px_rgba(243,191,67,0.2)]' 
+                                                : 'border-gray-300 dark:border-borderDark text-slate-400 transition-colors ' + icone.hoverColor
+                                        ]"
+                                        class="w-12 h-12 border rounded-md bg-transparent flex items-center justify-center transition-all cursor-pointer shadow-sm group">
+                                        
+                                        <!-- Renderiza Marca (O Truque da Máscara CSS) -->
+                                        <div v-if="icone.tipo === 'brand'" 
+                                             class="w-6 h-6 bg-current transition-colors" 
+                                             :style="`-webkit-mask-image: url(https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/${icone.iconName}.svg); -webkit-mask-size: cover; mask-image: url(https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/${icone.iconName}.svg); mask-size: cover;`">
+                                        </div>
+                                        
+                                        <!-- Renderiza Emoji -->
+                                        <span v-else class="text-xl grayscale group-hover:grayscale-0 transition-all" :class="iconeSelecionado === icone.id ? 'grayscale-0' : ''">
+                                            {{ icone.id }}
+                                        </span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
-
                         <!-- Lado Direito: Preview do QR e Download -->
                         <div class="lg:col-span-5 flex flex-col items-center justify-center h-full">
                             <div class="bg-slate-50 dark:bg-[#0a0a0a] border border-gray-200 dark:border-borderDark rounded-xl p-8 w-full h-full flex flex-col items-center justify-center shadow-inner">

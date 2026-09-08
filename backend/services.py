@@ -17,7 +17,7 @@ from backend import crud
 from backend import utils
 from fastapi import HTTPException
 
-def process_shorten_url(original_url: str, base_url: str, custom_alias: str = None, starts_at: datetime = None, expires_at: datetime = None, qr_fill: str = "#000000", qr_back: str = "#FFFFFF"):
+def process_shorten_url(original_url: str, base_url: str, custom_alias: str = None, starts_at: datetime = None, expires_at: datetime = None, qr_fill: str = "#000000", qr_back: str = "#FFFFFF", icon: str = ""):  
     """Gera o link curto com suporte a apelido e tempo de validade."""
     
     if custom_alias:
@@ -28,7 +28,7 @@ def process_shorten_url(original_url: str, base_url: str, custom_alias: str = No
         
     else:
         # Se o usuário definir datas customizadas, forçamos a criação de um link NOVO.
-        # Caso contrário, tentamos reaproveitar um link antigo.
+        # Caso contrário, tenta reaproveitar um link antigo.
         if starts_at or expires_at:
             short_code = None
         else:
@@ -42,7 +42,8 @@ def process_shorten_url(original_url: str, base_url: str, custom_alias: str = No
     
     return {
         "short_url": short_url,
-        "qr_code": utils.generate_qr_base64(short_url, fill_color=qr_fill, back_color=qr_back)
+        # Repassando o icon para o gerador no momento de retornar o objeto final:
+        "qr_code": utils.generate_qr_base64(short_url, fill_color=qr_fill, back_color=qr_back, icon_name=icon)
     }
 
 def process_redirect(short_code: str, user_agent_string: str):

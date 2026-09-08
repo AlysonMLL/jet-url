@@ -6,17 +6,15 @@ Função do arquivo: Isolar todas as chamadas HTTP (fetch) para o backend do Fas
 garantindo separação de responsabilidades (Separation of Concerns).
 */
 
-export async function encurtarLink(urlOriginal, apelido = '', startsAt = '', expiresAt = '', qrFill = '', qrBack = '') {
-    // Monta a URL base
+export async function encurtarLink(urlOriginal, apelido = '', startsAt = '', expiresAt = '', qrFill = '', qrBack = '', icon = '') {
     let endpoint = `/shorten?original_url=${encodeURIComponent(urlOriginal)}`;
-    
-    // Anexa os parâmetros apenas se eles existirem
     if (apelido) endpoint += `&custom_alias=${encodeURIComponent(apelido)}`;
     if (startsAt) endpoint += `&starts_at=${encodeURIComponent(startsAt)}`;
     if (expiresAt) endpoint += `&expires_at=${encodeURIComponent(expiresAt)}`;
 
     endpoint += `&qr_fill=${encodeURIComponent(qrFill)}`;
     endpoint += `&qr_back=${encodeURIComponent(qrBack)}`;
+    endpoint += `&icon=${encodeURIComponent(icon)}`; // <--- Anexando o ícone
 
     const res = await fetch(endpoint, { method: 'POST' });
     

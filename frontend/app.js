@@ -66,7 +66,9 @@ const app = createApp({
         const qrFill = ref('#000000');     // Cor do código
         const qrBack = ref('#ffffff');     // Cor do fundo
         const paletaAtiva = ref('Clássico');
-        const conteudoQR = ref('https://example.com'); // Input do QRCode
+        const conteudoQR = ref('https://example.com'); // Input do QRCode   
+        const iconeSelecionado = ref('');
+        
 
         // 1. Computa o preview em tempo real (limpando espaços e caracteres especiais)
         const urlPreview = computed(() => {
@@ -148,7 +150,8 @@ const app = createApp({
                 if (!conteudo) return;
                 try {
                     // Chama a nova rota do FastAPI
-                    const res = await fetch(`/api/qr?url=${encodeURIComponent(conteudo)}&fill=${encodeURIComponent(fill)}&back=${encodeURIComponent(back)}`);
+                    
+                    const res = await fetch(`/api/qr?url=${encodeURIComponent(conteudoQR.value)}&fill=${encodeURIComponent(qrFill.value)}&back=${encodeURIComponent(qrBack.value)}&icon=${encodeURIComponent(iconeSelecionado.value)}`);
                     if (!res.ok) throw new Error(`Erro HTTP ${res.status}`);
                     const data = await res.json();
                     if (idRequisicao === requisicaoQR) {
@@ -187,6 +190,49 @@ const app = createApp({
             document.body.removeChild(link);
         };
 
+        // Array com marcas oficiais (Simple-Icons) e emojis 
+        const listaIcones = ref([
+            // Comunicação e Redes
+            { id: 'whatsapp', tipo: 'brand', iconName: 'whatsapp', hoverColor: 'hover:text-[#25D366]' },
+            { id: 'telegram', tipo: 'brand', iconName: 'telegram', hoverColor: 'hover:text-[#26A5E4]' },
+            { id: 'discord', tipo: 'brand', iconName: 'discord', hoverColor: 'hover:text-[#5865F2]' },
+            { id: 'instagram', tipo: 'brand', iconName: 'instagram', hoverColor: 'hover:text-[#E4405F]' },
+            { id: 'facebook', tipo: 'brand', iconName: 'facebook', hoverColor: 'hover:text-[#1877F2]' },
+            { id: 'x', tipo: 'brand', iconName: 'x', hoverColor: 'hover:text-black dark:hover:text-white' },
+            { id: 'youtube', tipo: 'brand', iconName: 'youtube', hoverColor: 'hover:text-[#FF0000]' },
+            { id: 'twitch', tipo: 'brand', iconName: 'twitch', hoverColor: 'hover:text-[#9146FF]' },
+            { id: 'tiktok', tipo: 'brand', iconName: 'tiktok', hoverColor: 'hover:text-black dark:hover:text-white' },
+            { id: 'reddit', tipo: 'brand', iconName: 'reddit', hoverColor: 'hover:text-[#FF4500]' },
+            
+            // Ferramentas e Dev
+            { id: 'spotify', tipo: 'brand', iconName: 'spotify', hoverColor: 'hover:text-[#1DB954]' },
+            { id: 'github', tipo: 'brand', iconName: 'github', hoverColor: 'hover:text-black dark:hover:text-white' },
+            { id: 'googledrive', tipo: 'brand', iconName: 'googledrive', hoverColor: 'hover:text-[#1FA463]' },
+            
+            // Finanças
+            { id: 'pix', tipo: 'brand', iconName: 'pix', hoverColor: 'hover:text-[#32BCAD]' },
+            { id: 'mercadopago', tipo: 'brand', iconName: 'mercadopago', hoverColor: 'hover:text-[#00B1EA]' },
+            { id: 'paypal', tipo: 'brand', iconName: 'paypal', hoverColor: 'hover:text-[#00457C]' },
+
+            // Emojis / Utilitários (Para URL, Wifi e Telefone)
+            { id: '🔗', tipo: 'emoji' }, // Link/URL
+            { id: '📶', tipo: 'emoji' }, // Wi-fi
+            { id: '📞', tipo: 'emoji' }, // Telefone
+            { id: '🛒', tipo: 'emoji' }, // Carrinho de Compras
+            { id: '💼', tipo: 'emoji' }, // Maleta
+            { id: '📷', tipo: 'emoji' }, // Câmera
+            { id: '🔥', tipo: 'emoji' }, // Fogo
+            { id: '❤️', tipo: 'emoji' }, // Coração
+            { id: '✈️', tipo: 'emoji' }  // Avião
+        ]);
+
+        // Função de clique
+        const selecionarIcone = (id) => {
+            // Se clicar no mesmo ícone, ele "desmarca" (fica vazio)
+            iconeSelecionado.value = (iconeSelecionado.value === id) ? '' : id;
+            atualizarQR(); // Atualiza a imagem em tempo real!
+        };
+
         const processarEncurtamento = async () => {
             if (!urlInput.value) {
                 erroEncurtar.value = "Por favor, digite uma URL válida.";
@@ -213,7 +259,7 @@ const app = createApp({
                 // Passa também as cores do QR Code
                 const dados = await encurtarLink(
                     urlInput.value, apelidoInput.value, startIso, expIso, 
-                    qrFill.value, qrBack.value
+                    qrFill.value, qrBack.value, iconeSelecionado.value
                 );
                 
                 shortUrl.value = dados.short_url;
@@ -368,7 +414,7 @@ const app = createApp({
             personalizarQR, qrFill, qrBack, paletaAtiva, rgbFill, rgbBack,
             selecionarPaleta, limparPaleta, baixarQRCode,
             conteudoQR, atualizarQR,
-            colarTexto
+            colarTexto, listaIcones, iconeSelecionado, selecionarIcone
         };
     }
 });
