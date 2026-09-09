@@ -1,10 +1,4 @@
-/* O que há aqui:
-- encurtarLink(urlOriginal, apelido)
-- buscarEstatisticas(codigo)
 
-Função do arquivo: Isolar todas as chamadas HTTP (fetch) para o backend do FastAPI,
-garantindo separação de responsabilidades (Separation of Concerns).
-*/
 
 export async function encurtarLink(urlOriginal, apelido = '', startsAt = '', expiresAt = '', qrFill = '', qrBack = '', icon = '') {
     let endpoint = `/shorten?original_url=${encodeURIComponent(urlOriginal)}`;

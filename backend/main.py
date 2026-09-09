@@ -19,6 +19,8 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import HttpUrl
 from typing import Optional
 from datetime import datetime
+from fastapi.templating import Jinja2Templates
+from jinja2 import Environment, FileSystemLoader
 
 
 from backend.database import init_db
@@ -31,12 +33,26 @@ app.mount("/public", StaticFiles(directory="public"), name="public")
 app.mount("/assets", StaticFiles(directory="src/assets"), name="assets")
 app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
 
+# 1. Configura o Jinja2 para ler a pasta "templates" sem conflitar com os
+# delimitadores de interpolação usados pelo Vue nos arquivos HTML.
+templates = Jinja2Templates(
+    env=Environment(
+        loader=FileSystemLoader("templates"),
+        variable_start_string="[[",
+        variable_end_string="]]",
+    ),
+)
+
 # Inicia o banco de dados
 init_db()
 
 @app.get("/")
-async def root():
-    return FileResponse("index.html")
+async def root(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={"request": request},
+    )
 
 @app.post("/shorten")
 async def shorten_url(

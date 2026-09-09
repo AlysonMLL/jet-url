@@ -1,11 +1,4 @@
-/* O que há aqui:
-- Instância raiz do Vue 3
-- Estado reativo (Variáveis como urlInput, dadosMetricas, isDark)
-- Funções interligadas à interface (processarEncurtamento, carregarDados, copiarLink)
 
-Função do arquivo: Atuar como o Controlador (ViewModel). Ele une a interface (HTML)
-com as requisições da API e as funções utilitárias.
-*/
 
 import { encurtarLink, buscarEstatisticas } from './api.js';
 import { renderizarGraficoDispositivos, renderizarGraficoOS, renderizarGraficoNavegadores } from './components.js';
