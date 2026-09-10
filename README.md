@@ -52,6 +52,20 @@ O projeto adota os princípios de **Clean Architecture**, separando regras de ne
 
 <br>
 
+# ☁️ Deploy e Infraestrutura (Produção)
+
+O Jet.URL está em produção e foi arquitetado para rodar em um ecossistema de nuvem escalável, aplicando a separação estrita entre a camada de aplicação e a persistência de dados:
+
+<br>
+
+* **Aplicação Web (Render):** O backend orquestrado em FastAPI e a interface Vue são servidos através de um *Web Service* no [Render](https://render.com). A plataforma gerencia a instalação automática das dependências através do `requirements.txt` (incluindo `uvicorn`, `psycopg2-binary` e `qrcode[pil]`) e expõe a API de forma segura.
+* **Persistência de Dados Resiliente (Supabase):** Como a infraestrutura gratuita do Render sofre hibernação por inatividade (resetando o armazenamento local em disco), o uso de SQLite foi descartado. Toda a carga de dados foi migrada para o **PostgreSQL** hospedado na nuvem do **Supabase**. Isso garante que todas as URLs curtas e as métricas de tráfego permaneçam 100% seguras, imutáveis e disponíveis, independentemente do estado de "sono" do servidor web.
+* **Connection Pooling (IPv4):** A comunicação transacional com o banco de dados é roteada nativamente através do *Supavisor* (Connection Pooler do Supabase, porta `6543`). Essa arquitetura resolve limitações de roteamento IPv6 de servidores gratuitos, mantendo a latência baixa e a conexão estável.
+* **Continuous Deployment (CI/CD):** Integração contínua ligada diretamente ao repositório no GitHub. Toda vez que um novo *commit* é enviado para a branch `main`, o Render escuta o *webhook*, baixa a nova versão e realiza o *build* em background, efetuando a troca do serviço com *Zero Downtime* (sem queda para o usuário final).
+* **Segurança Cloud-Native:** Seguindo as melhores práticas globais de segurança, a `DATABASE_URL` não é versionada no código. As credenciais são injetadas no momento do *build* estritamente através do painel de *Environment Variables* da nuvem.
+
+<br>
+
 # 🗄️ Estrutura do Banco de Dados
 
 O sistema utiliza um modelo relacional eficiente, blindado e escalável no PostgreSQL:
