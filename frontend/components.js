@@ -1,7 +1,15 @@
 /* O que há aqui:
-- renderizarGraficoDispositivos(labels, data, isDark)
-- renderizarGraficoNavegadores(labels, data, isDark)
-- renderizarGraficoOS(labels, data, isDark)
+- Renderização do gráfico de dispositivos no formato de rosca (doughnut)
+- Renderização do gráfico de navegadores em barras horizontais
+- Renderização do gráfico de sistemas operacionais em barras verticais
+- Opções compartilhadas do Chart.js para responsividade, escalas, legenda e tema
+- Paleta de cores variada para os conjuntos de dados dos gráficos
+- Controle das instâncias existentes para destruir gráficos antes de recriá-los
+
+Função do arquivo: Centralizar a criação e a atualização dos gráficos de métricas
+da aplicação usando o Chart.js. Ele recebe os rótulos, os valores e o tema atual,
+configura cada visualização de acordo com o tipo de dado e mantém as instâncias
+organizadas para evitar gráficos duplicados no mesmo elemento canvas.
 */
 
 let chartDispositivos = null;

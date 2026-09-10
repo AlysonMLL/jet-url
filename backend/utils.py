@@ -35,10 +35,15 @@ def get_icon_url(icon_id: str) -> str:
         "reddit": "https://raw.githubusercontent.com/WalkxCode/dashboard-icons/main/png/reddit.png",
         "spotify": "https://raw.githubusercontent.com/WalkxCode/dashboard-icons/main/png/spotify.png",
         "github": "https://raw.githubusercontent.com/WalkxCode/dashboard-icons/main/png/github.png",
+        "linkedin": "https://raw.githubusercontent.com/WalkxCode/dashboard-icons/main/png/linkedin.png",
         "googledrive": "https://raw.githubusercontent.com/WalkxCode/dashboard-icons/main/png/google-drive.png",
         "paypal": "https://raw.githubusercontent.com/WalkxCode/dashboard-icons/main/png/paypal.png",
         "pix": "https://img.icons8.com/color/512/pix.png",
-        "mercadopago": "https://img.icons8.com/color/512/mercado-pago.png"
+        "mercadopago": "https://img.icons8.com/color/512/mercado-pago.png",
+
+        # Genéricos:
+        "wifi": "https://img.icons8.com/ios-filled/512/wifi.png",
+        "localizacao": "https://img.icons8.com/ios-filled/512/marker.png"
     }
     
     if icon_id in brands:

@@ -219,6 +219,11 @@
                                         class="w-6 h-6 bg-current transition-colors" 
                                         :style="`-webkit-mask-image: url(https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/${icone.iconName}.svg); -webkit-mask-size: cover; mask-image: url(https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/${icone.iconName}.svg); mask-size: cover;`">
                                 </div>
+
+                                <div v-else-if="icone.tipo === 'generic'" 
+                                    class="w-6 h-6 bg-current transition-colors" 
+                                    :style="`-webkit-mask-image: url(${icone.urlSvg}); -webkit-mask-size: cover; mask-image: url(${icone.urlSvg}); mask-size: cover;`">
+                                </div>
                                 
                                 <!-- Renderiza Emoji -->
                                 <span v-else class="text-xl grayscale group-hover:grayscale-0 transition-all" :class="iconeSelecionado === icone.id ? 'grayscale-0' : ''">

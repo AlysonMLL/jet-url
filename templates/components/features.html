@@ -129,8 +129,16 @@
                 <div class="flex-grow relative"><canvas id="osChart"></canvas></div>
             </div>
         </div>
+
+        <div>
+            <button @click="exportarDadosCSV()" class="mt-10 block mx-auto bg-brand text-black px-6 py-4 rounded-xl shadow-sm font-bold uppercase tracking-widest flex items-center gap-2 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(243,191,67,0.45)] hover:bg-transparent hover:border-brand hover:text-brand hover:brightness-110 transition-all duration-300">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    Exportar CSV
+            </button>
+        </div>
     </div>
 </div>
+
 <!-- Cards de Funcionalidades -->
 <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 pb-10 pt-10">
     <div class="group relative overflow-hidden bg-white dark:bg-card border border-gray-200 dark:border-borderDark p-8 rounded-lg shadow-sm dark:shadow-none transition-all duration-300 ease-out hover:-translate-y-2">

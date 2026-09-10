@@ -1,4 +1,18 @@
+/* O que há aqui:
+- Instância raiz do Vue 3 e ciclo de vida da aplicação
+- Estado reativo para encurtamento de URLs, apelidos, carregamento e mensagens de erro
+- Configuração de validade do link por datas, presets de tempo e conversão para UTC
+- Personalização de QR Code: cores, paletas, conteúdo, ícones e download da imagem
+- Preview em tempo real do apelido, efeito de máquina de escrever e alternância de tema
+- Consulta de métricas do link, organização dos dados e renderização dos gráficos
+- Integração com a API, área de transferência e componentes visuais auxiliares
 
+Função do arquivo: Atuar como o Controlador (ViewModel) da interface principal.
+Ele conecta o template HTML ao estado reativo do Vue, coordena as interações do usuário
+e delega responsabilidades aos módulos de API, tema e gráficos. Também valida os dados
+do formulário, cria links encurtados, atualiza o QR Code com debounce, carrega estatísticas
+e expõe ao template todas as propriedades e métodos necessários para a renderização.
+*/
 
 import { encurtarLink, buscarEstatisticas } from './api.js';
 import { renderizarGraficoDispositivos, renderizarGraficoOS, renderizarGraficoNavegadores } from './components.js';
@@ -185,6 +199,7 @@ const app = createApp({
 
         // Array com marcas oficiais (Simple-Icons) e emojis 
         const listaIcones = ref([
+
             // Comunicação e Redes
             { id: 'whatsapp', tipo: 'brand', iconName: 'whatsapp', hoverColor: 'hover:text-[#25D366]' },
             { id: 'telegram', tipo: 'brand', iconName: 'telegram', hoverColor: 'hover:text-[#26A5E4]' },
@@ -196,6 +211,7 @@ const app = createApp({
             { id: 'twitch', tipo: 'brand', iconName: 'twitch', hoverColor: 'hover:text-[#9146FF]' },
             { id: 'tiktok', tipo: 'brand', iconName: 'tiktok', hoverColor: 'hover:text-black dark:hover:text-white' },
             { id: 'reddit', tipo: 'brand', iconName: 'reddit', hoverColor: 'hover:text-[#FF4500]' },
+            { id: 'linkedin', tipo: 'brand', iconName: 'linkedin', hoverColor: 'hover:text-[#0A66C2]' },
             
             // Ferramentas e Dev
             { id: 'spotify', tipo: 'brand', iconName: 'spotify', hoverColor: 'hover:text-[#1DB954]' },
@@ -207,16 +223,30 @@ const app = createApp({
             { id: 'mercadopago', tipo: 'brand', iconName: 'mercadopago', hoverColor: 'hover:text-[#00B1EA]' },
             { id: 'paypal', tipo: 'brand', iconName: 'paypal', hoverColor: 'hover:text-[#00457C]' },
 
+            // Ícones Genéricos de UI
+            { 
+                id: 'wifi', 
+                tipo: 'generic', 
+                urlSvg: 'https://unpkg.com/lucide-static@0.320.0/icons/wifi.svg', 
+                hoverColor: 'hover:text-blue-500' 
+            },
+            { 
+                id: 'localizacao', 
+                tipo: 'generic', 
+                urlSvg: 'https://unpkg.com/lucide-static@0.320.0/icons/map-pin.svg', 
+                hoverColor: 'hover:text-red-500' 
+            },
+
             // Emojis / Utilitários (Para URL, Wifi e Telefone)
-            { id: '🔗', tipo: 'emoji' }, // Link/URL
-            { id: '📶', tipo: 'emoji' }, // Wi-fi
-            { id: '📞', tipo: 'emoji' }, // Telefone
-            { id: '🛒', tipo: 'emoji' }, // Carrinho de Compras
-            { id: '💼', tipo: 'emoji' }, // Maleta
-            { id: '📷', tipo: 'emoji' }, // Câmera
-            { id: '🔥', tipo: 'emoji' }, // Fogo
-            { id: '❤️', tipo: 'emoji' }, // Coração
-            { id: '✈️', tipo: 'emoji' }  // Avião
+            { id: '🔗', tipo: 'emoji' }, { id: '📶', tipo: 'emoji' }, { id: '📞', tipo: 'emoji' }, 
+            { id: '🛒', tipo: 'emoji' }, { id: '💼', tipo: 'emoji' }, { id: '📷', tipo: 'emoji' }, 
+            { id: '🔥', tipo: 'emoji' }, { id: '❤️', tipo: 'emoji' }, { id: '✈️', tipo: 'emoji' },
+            { id: '✅', tipo: 'emoji' }, { id: '🔑', tipo: 'emoji' }, { id: '💰', tipo: 'emoji' }, 
+            { id: '⭐', tipo: 'emoji' }, { id: '📱', tipo: 'emoji' }, { id: '🏆', tipo: 'emoji' }, 
+            { id: '⚽', tipo: 'emoji' }, // { id: '🌍', tipo: 'emoji' }, //
+
+            
+            
         ]);
 
         // Função de clique
@@ -361,6 +391,11 @@ const app = createApp({
             }
         };
 
+        const exportarDadosCSV = () => {
+            // Redireciona para a rota de exportação CSV
+            window.location.href = '/exportar-dados';
+        };
+
         // --- 3. EFEITO MÁQUINA DE ESCREVER ---
         const iniciarEfeitoDigitacao = () => {
             const textoLongo = 'cole sua URL aqui...';
@@ -407,7 +442,7 @@ const app = createApp({
             personalizarQR, qrFill, qrBack, paletaAtiva, rgbFill, rgbBack,
             selecionarPaleta, limparPaleta, baixarQRCode,
             conteudoQR, atualizarQR,
-            colarTexto, listaIcones, iconeSelecionado, selecionarIcone
+            colarTexto, listaIcones, iconeSelecionado, selecionarIcone, exportarDadosCSV
         };
     }
 });
