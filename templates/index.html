@@ -1,3 +1,26 @@
+<!--
+O que há aqui:
+- Template Jinja2 que estende a estrutura e os recursos compartilhados de base.html
+- Tela principal do encurtador de URLs, com apresentação do produto e formulário de entrada
+- Campo para URL original, botão de colar, envio por clique ou pela tecla Enter e estado de carregamento
+- Campo opcional para apelido personalizado com preview dinâmico do endereço gerado
+- Configuração opcional de início e término do link, com presets de duração e datas manuais
+- Exibição do resultado do encurtamento, incluindo link gerado, QR Code e botão para copiar
+- Área completa de personalização do QR Code: conteúdo, paletas, cores, ícones e download em PNG
+- Preview responsivo do QR Code, com estado vazio enquanto não houver imagem disponível
+- Inclusão das seções reutilizáveis de recursos e perguntas frequentes
+- Classes utilitárias do Tailwind CSS para responsividade, temas claro/escuro, estados de foco e transições
+- Diretivas Vue para bindings, eventos, condicionais e listas, conectando o template ao frontend/app.js
+
+Função do arquivo: Definir a interface principal da aplicação de encurtamento de URLs.
+Ele combina a renderização do servidor feita pelo Jinja2 com a interatividade do Vue,
+apresentando os controles para criar links, definir apelidos e validade, personalizar
+QR Codes e acompanhar o resultado da operação. Os dados e ações são fornecidos pelo
+estado reativo e pelos métodos expostos em frontend/app.js, enquanto base.html e os
+componentes incluídos fornecem a estrutura geral e as seções compartilhadas da página.
+-->
+
+
 {% extends "base.html" %}
 
 {% block content %}
@@ -18,7 +41,7 @@
             <!-- Container Relative para ancorar o botão -->
             <div class="relative flex-grow flex items-center">
                 <!-- Nota: Adicionei pr-12 para o texto não ficar por baixo do ícone -->
-                <input type="url" v-model="urlInput" @keyup.enter="processarEncurtamento" :placeholder="placeholderAnimado" 
+                <input type="url" v-model="urlInput" @focus="focarUrl" @blur="desfocarUrl" @keyup.enter="processarEncurtamento" :placeholder="placeholderAnimado" 
                     class="w-full bg-white dark:bg-transparent border border-gray-300 dark:border-borderDark text-slate-900 dark:text-white p-4 pr-12 rounded-md focus:border-brand focus:outline-none font-mono placeholder-gray-400 dark:placeholder-gray-600 transition-colors shadow-sm dark:shadow-none">
                 
                 <!-- Botão de Colar -->
@@ -35,8 +58,12 @@
         
         <!-- Input de Apelido (Personalização) -->
         <div class="mt-4 flex flex-col items-center md:items-start w-full">
-            <input type="text" v-model="apelidoInput" placeholder="Apelido da URL | URL Personalizada (opcional)" 
+            <label for="apelido-url" class="self-start ml-1 mb-2 text-xs font-mono uppercase tracking-widest text-slate-500 dark:text-gray-400">
+                Apelido personalizado <span class="normal-case tracking-normal opacity-70">(opcional)</span>
+            </label>
+            <input id="apelido-url" type="text" v-model="apelidoInput" placeholder="ex: portfolio-seunome" 
                 class="w-full h-14 bg-white dark:bg-transparent border border-gray-300 dark:border-borderDark text-slate-900 dark:text-white p-4 rounded-md focus:border-brand focus:outline-none font-mono text-sm transition-colors shadow-sm dark:shadow-none dark:placeholder-gray-600">
+                
             
             <!-- Preview Dinâmico -->
             <div v-if="urlPreview" class="mt-3 text-sm text-slate-500 dark:text-gray-400 font-mono flex items-center gap-2 bg-yellow-50 dark:bg-brand/10 px-4 py-2 rounded border border-yellow-200 dark:border-brand/30 w-full transition-all">
@@ -209,8 +236,8 @@
                                 @click="selecionarIcone(icone.id)"
                                 :class="[
                                     iconeSelecionado === icone.id 
-                                        ? 'border-brandLight text-brandLight dark:border-brand dark:text-brand bg-yellow-50 dark:bg-brand/10 shadow-[0_0_10px_rgba(243,191,67,0.2)]' 
-                                        : 'border-gray-300 dark:border-borderDark text-slate-400 transition-colors ' + icone.hoverColor
+                                        ? 'border-brandLight bg-yellow-50 dark:border-brand dark:bg-brand/10 shadow-[0_0_10px_rgba(243,191,67,0.2)] ' + (icone.colorClass || 'text-brandLight dark:text-brand')
+                                        : 'border-gray-300 dark:border-borderDark text-slate-400 transition-colors ' + (icone.colorClass || 'text-slate-400')
                                 ]"
                                 class="w-12 h-12 border rounded-md bg-transparent flex items-center justify-center transition-all cursor-pointer shadow-sm group">
                                 
@@ -226,7 +253,7 @@
                                 </div>
                                 
                                 <!-- Renderiza Emoji -->
-                                <span v-else class="text-xl grayscale group-hover:grayscale-0 transition-all" :class="iconeSelecionado === icone.id ? 'grayscale-0' : ''">
+                                <span v-else class="text-xl transition-all" :class="icone.colorClass || 'text-slate-500'">
                                     {{ icone.id }}
                                 </span>
                             </button>

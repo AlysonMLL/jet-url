@@ -1,13 +1,22 @@
 """
 O que há aqui:
-- process_shorten_url(original_url, base_url)
-- process_redirect(short_code, user_agent_string)
-- get_url_stats(short_code)
-- generate_csv_export()
+- process_shorten_url: cria links curtos, valida apelidos e aplica período de validade
+- Geração de QR Code personalizado com cores e ícone definidos na requisição
+- Reutilização de links existentes quando não há alias ou datas customizadas
+- process_redirect: valida a disponibilidade do link antes do redirecionamento
+- Classificação do dispositivo, sistema operacional e navegador pelo User-Agent
+- Registro de cada clique e retorno da URL original para o redirecionamento
+- get_url_stats: consulta as métricas de acesso de um código curto
+- generate_csv_export: monta um CSV em memória e devolve uma resposta para download
 
-Função do arquivo: Lógica de Negócios e Micro-ETL. Faz a ponte entre 
-as rotas do FastAPI (main.py) e o banco de dados (crud.py).
+Função do arquivo: Centralizar a lógica de negócios e o processamento dos dados da
+aplicação. Ele faz a ponte entre as rotas do FastAPI (main.py), o acesso ao banco de
+dados (crud.py) e os utilitários de QR Code (utils.py). Também concentra as regras de
+criação e reutilização de links, validação de início e expiração, análise de acessos,
+tratamento de erros HTTP e preparação da exportação das métricas.
 """
+
+
 import io
 import csv
 from datetime import datetime, timezone

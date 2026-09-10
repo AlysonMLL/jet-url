@@ -1,15 +1,24 @@
 """
 O que há aqui:
-- Inicialização do FastAPI
-- @app.get("/") -> Home
-- @app.post("/shorten") -> Cria link curto
-- @app.get("/{short_code}") -> Rota de Redirecionamento 
-- @app.get("/stats/{short_code}") -> Métricas
-- @app.get("/exportar-dados") -> Exportação ETL
+- Inicialização da aplicação FastAPI e do banco de dados
+- Montagem dos diretórios estáticos public, assets e frontend
+- Configuração do Jinja2 para renderizar templates sem conflitar com as expressões Vue
+- @app.get("/"): renderiza a página inicial do encurtador
+- @app.post("/shorten"): valida os dados e solicita a criação de um link curto
+- @app.get("/{short_code}"): processa o redirecionamento para a URL original
+- @app.get("/stats/{short_code}"): disponibiliza as métricas de acesso do link
+- @app.get("/exportar-dados"): fornece a exportação das métricas em CSV
+- @app.get("/api/qr"): gera QR Codes avulsos para o preview em tempo real
+- Conversão da URL base para HTTPS fora de ambientes locais
 
-Função do arquivo: Ponto de entrada (Entry Point) e roteador da API.
-Não contém regras de negócio ou queries SQL.
+Função do arquivo: Servir como ponto de entrada (Entry Point) e camada de roteamento
+da API. Ele cria e configura o FastAPI, expõe os endpoints HTTP, valida parâmetros
+recebidos, entrega templates e arquivos estáticos e encaminha as operações para as
+camadas responsáveis. A lógica de negócio fica em services.py, a geração de QR Code
+fica em utils.py e o acesso ao banco de dados é delegado ao módulo crud.py, mantendo
+este arquivo concentrado na inicialização, integração e transporte das requisições.
 """
+
 
 # uvicorn backend.main:app --reload
 

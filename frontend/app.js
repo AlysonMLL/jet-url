@@ -201,52 +201,50 @@ const app = createApp({
         const listaIcones = ref([
 
             // Comunicação e Redes
-            { id: 'whatsapp', tipo: 'brand', iconName: 'whatsapp', hoverColor: 'hover:text-[#25D366]' },
-            { id: 'telegram', tipo: 'brand', iconName: 'telegram', hoverColor: 'hover:text-[#26A5E4]' },
-            { id: 'discord', tipo: 'brand', iconName: 'discord', hoverColor: 'hover:text-[#5865F2]' },
-            { id: 'instagram', tipo: 'brand', iconName: 'instagram', hoverColor: 'hover:text-[#E4405F]' },
-            { id: 'facebook', tipo: 'brand', iconName: 'facebook', hoverColor: 'hover:text-[#1877F2]' },
-            { id: 'x', tipo: 'brand', iconName: 'x', hoverColor: 'hover:text-black dark:hover:text-white' },
-            { id: 'youtube', tipo: 'brand', iconName: 'youtube', hoverColor: 'hover:text-[#FF0000]' },
-            { id: 'twitch', tipo: 'brand', iconName: 'twitch', hoverColor: 'hover:text-[#9146FF]' },
-            { id: 'tiktok', tipo: 'brand', iconName: 'tiktok', hoverColor: 'hover:text-black dark:hover:text-white' },
-            { id: 'reddit', tipo: 'brand', iconName: 'reddit', hoverColor: 'hover:text-[#FF4500]' },
-            { id: 'linkedin', tipo: 'brand', iconName: 'linkedin', hoverColor: 'hover:text-[#0A66C2]' },
+            { id: 'whatsapp', tipo: 'brand', iconName: 'whatsapp', colorClass: 'text-[#25D366]' },
+            { id: 'telegram', tipo: 'brand', iconName: 'telegram', colorClass: 'text-[#26A5E4]' },
+            { id: 'discord', tipo: 'brand', iconName: 'discord', colorClass: 'text-[#5865F2]' },
+            { id: 'instagram', tipo: 'brand', iconName: 'instagram', colorClass: 'text-[#E4405F]' },
+            { id: 'facebook', tipo: 'brand', iconName: 'facebook', colorClass: 'text-[#1877F2]' },
+            { id: 'x', tipo: 'brand', iconName: 'x', colorClass: 'text-black dark:text-white' },
+            { id: 'youtube', tipo: 'brand', iconName: 'youtube', colorClass: 'text-[#FF0000]' },
+            { id: 'twitch', tipo: 'brand', iconName: 'twitch', colorClass: 'text-[#9146FF]' },
+            { id: 'tiktok', tipo: 'brand', iconName: 'tiktok', colorClass: 'text-black dark:text-white' },
+            { id: 'reddit', tipo: 'brand', iconName: 'reddit', colorClass: 'text-[#FF4500]' },
+            { id: 'linkedin', tipo: 'brand', iconName: 'linkedin', colorClass: 'text-[#0A66C2]' },
             
             // Ferramentas e Dev
-            { id: 'spotify', tipo: 'brand', iconName: 'spotify', hoverColor: 'hover:text-[#1DB954]' },
-            { id: 'github', tipo: 'brand', iconName: 'github', hoverColor: 'hover:text-black dark:hover:text-white' },
-            { id: 'googledrive', tipo: 'brand', iconName: 'googledrive', hoverColor: 'hover:text-[#1FA463]' },
+            { id: 'spotify', tipo: 'brand', iconName: 'spotify', colorClass: 'text-[#1DB954]' },
+            { id: 'github', tipo: 'brand', iconName: 'github', colorClass: 'text-black dark:text-white' },
+            { id: 'googledrive', tipo: 'brand', iconName: 'googledrive', colorClass: 'text-[#1FA463]' },
             
             // Finanças
-            { id: 'pix', tipo: 'brand', iconName: 'pix', hoverColor: 'hover:text-[#32BCAD]' },
-            { id: 'mercadopago', tipo: 'brand', iconName: 'mercadopago', hoverColor: 'hover:text-[#00B1EA]' },
-            { id: 'paypal', tipo: 'brand', iconName: 'paypal', hoverColor: 'hover:text-[#00457C]' },
+            { id: 'pix', tipo: 'brand', iconName: 'pix', colorClass: 'text-[#32BCAD]' },
+            { id: 'mercadopago', tipo: 'brand', iconName: 'mercadopago', colorClass: 'text-[#00B1EA]' },
+            { id: 'paypal', tipo: 'brand', iconName: 'paypal', colorClass: 'text-[#00457C]' },
 
             // Ícones Genéricos de UI
             { 
                 id: 'wifi', 
                 tipo: 'generic', 
                 urlSvg: 'https://unpkg.com/lucide-static@0.320.0/icons/wifi.svg', 
-                hoverColor: 'hover:text-blue-500' 
+                colorClass: 'text-blue-500' 
             },
             { 
                 id: 'localizacao', 
                 tipo: 'generic', 
                 urlSvg: 'https://unpkg.com/lucide-static@0.320.0/icons/map-pin.svg', 
-                hoverColor: 'hover:text-red-500' 
+                colorClass: 'text-red-500' 
             },
 
             // Emojis / Utilitários (Para URL, Wifi e Telefone)
-            { id: '🔗', tipo: 'emoji' }, { id: '📶', tipo: 'emoji' }, { id: '📞', tipo: 'emoji' }, 
-            { id: '🛒', tipo: 'emoji' }, { id: '💼', tipo: 'emoji' }, { id: '📷', tipo: 'emoji' }, 
-            { id: '🔥', tipo: 'emoji' }, { id: '❤️', tipo: 'emoji' }, { id: '✈️', tipo: 'emoji' },
-            { id: '✅', tipo: 'emoji' }, { id: '🔑', tipo: 'emoji' }, { id: '💰', tipo: 'emoji' }, 
-            { id: '⭐', tipo: 'emoji' }, { id: '📱', tipo: 'emoji' }, { id: '🏆', tipo: 'emoji' }, 
-            { id: '⚽', tipo: 'emoji' }, // { id: '🌍', tipo: 'emoji' }, //
+            { id: '🔗', tipo: 'emoji', colorClass: 'text-sky-500' }, { id: '📶', tipo: 'emoji', colorClass: 'text-emerald-500' }, { id: '📞', tipo: 'emoji', colorClass: 'text-violet-500' }, 
+            { id: '🛒', tipo: 'emoji', colorClass: 'text-amber-500' }, { id: '💼', tipo: 'emoji', colorClass: 'text-cyan-500' }, { id: '📷', tipo: 'emoji', colorClass: 'text-pink-500' }, 
+            { id: '🔥', tipo: 'emoji', colorClass: 'text-orange-500' }, { id: '❤️', tipo: 'emoji', colorClass: 'text-rose-500' }, { id: '✈️', tipo: 'emoji', colorClass: 'text-sky-500' },
+            { id: '✅', tipo: 'emoji', colorClass: 'text-green-500' }, { id: '🔑', tipo: 'emoji', colorClass: 'text-yellow-500' }, { id: '💰', tipo: 'emoji', colorClass: 'text-emerald-600' }, 
+            { id: '⭐', tipo: 'emoji', colorClass: 'text-amber-400' }, { id: '📱', tipo: 'emoji', colorClass: 'text-indigo-500' }, { id: '🏆', tipo: 'emoji', colorClass: 'text-yellow-500' }, 
+            { id: '⚽', tipo: 'emoji', colorClass: 'text-lime-500' }, // { id: '🌍', tipo: 'emoji' }, //
 
-            
-            
         ]);
 
         // Função de clique
@@ -397,33 +395,59 @@ const app = createApp({
         };
 
         // --- 3. EFEITO MÁQUINA DE ESCREVER ---
+        let timeoutDigitacao;
+        let intervaloCursor;
+
+        const pararEfeitoDigitacao = () => {
+            clearTimeout(timeoutDigitacao);
+            clearInterval(intervaloCursor);
+            placeholderAnimado.value = '';
+        };
+
         const iniciarEfeitoDigitacao = () => {
+            clearTimeout(timeoutDigitacao);
+            clearInterval(intervaloCursor);
+
             const textoLongo = 'cole sua URL aqui...';
             let index = 0;
             let mostrarCursor = true;
 
-            setInterval(() => {
-                mostrarCursor = !mostrarCursor;
+            const renderizarPlaceholder = () => {
                 if (!urlInput.value) {
                     placeholderAnimado.value = textoLongo.slice(0, index) + (mostrarCursor ? '|' : '');
                 }
+            };
+
+            intervaloCursor = setInterval(() => {
+                mostrarCursor = !mostrarCursor;
+                renderizarPlaceholder();
             }, 500);
 
             const digitar = () => {
-                if (urlInput.value) {
-                    placeholderAnimado.value = textoLongo;
-                    index = 0;
-                    setTimeout(digitar, 300);
-                    return;
-                }
-                index++;
+                if (urlInput.value) return;
+
                 if (index > textoLongo.length) {
-                    setTimeout(() => { index = 0; digitar(); }, 4000);
+                    timeoutDigitacao = setTimeout(() => {
+                        index = 0;
+                        digitar();
+                    }, 4000);
                     return;
                 }
-                setTimeout(digitar, 90);
+
+                renderizarPlaceholder();
+                index++;
+                timeoutDigitacao = setTimeout(digitar, 90);
             };
+
             digitar();
+        };
+
+        const focarUrl = () => {
+            pararEfeitoDigitacao();
+        };
+
+        const desfocarUrl = () => {
+            if (!urlInput.value) iniciarEfeitoDigitacao();
         };
 
         // Roda assim que a tela abre
@@ -442,7 +466,8 @@ const app = createApp({
             personalizarQR, qrFill, qrBack, paletaAtiva, rgbFill, rgbBack,
             selecionarPaleta, limparPaleta, baixarQRCode,
             conteudoQR, atualizarQR,
-            colarTexto, listaIcones, iconeSelecionado, selecionarIcone, exportarDadosCSV
+            colarTexto, listaIcones, iconeSelecionado, selecionarIcone, exportarDadosCSV,
+            focarUrl, desfocarUrl
         };
     }
 });

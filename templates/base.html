@@ -1,3 +1,24 @@
+<!--
+O que há aqui:
+- Estrutura HTML base da aplicação, incluindo idioma, codificação e viewport responsivo
+- Metadados globais da página, título do Jet.URL e favicon
+- Carregamento das dependências externas usadas pela interface: Tailwind CSS, Chart.js e Vue 3
+- Configuração do Tailwind CSS com modo escuro baseado na classe HTML e cores da identidade visual
+- Definição das fontes, cores de marca, fundo, cartões e bordas utilizadas pelos templates
+- Corpo da aplicação com suporte a tema claro/escuro, transições e altura mínima da viewport
+- Container Vue com id="app", responsável por envolver toda a interface interativa
+- Inclusão dos componentes compartilhados de cabeçalho e rodapé
+- Bloco Jinja2 content, reservado para o conteúdo específico de cada página
+- Carregamento do módulo frontend/app.js, que inicializa o Vue e conecta a interface à API
+
+Função do arquivo: Servir como template base e layout global das páginas renderizadas pelo
+Jinja2. Ele centraliza a estrutura HTML comum, os recursos externos, a configuração visual
+do Tailwind e o ponto de montagem do Vue. Os templates filhos, como index.html, estendem
+este arquivo e inserem seu conteúdo no bloco content, mantendo header, footer, scripts e
+configurações compartilhadas em um único lugar.
+-->
+
+
 <!DOCTYPE html>
 <html lang="pt-BR" class="dark">
 <head>

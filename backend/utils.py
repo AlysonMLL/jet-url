@@ -1,9 +1,20 @@
 """
 O que há aqui:
-- generate_short_code(length)
-- get_icon_url(icon_id)
-- generate_qr_base64(url, fill, back, icon)
+- generate_short_code(length): gera códigos alfanuméricos aleatórios para URLs curtas
+- get_icon_url(icon_id): converte IDs de marcas, ícones genéricos e emojis em URLs de CDN
+- generate_qr_base64(url, fill, back, icon): cria QR Codes personalizados em formato PNG
+- Download e processamento de ícones externos para inserção central no QR Code
+- Conversão da imagem gerada para uma string Base64 compatível com respostas HTTP
+
+Função do arquivo: Reunir utilitários compartilhados pelo backend para geração de códigos
+curtos e criação de QR Codes personalizados. O módulo resolve os ícones escolhidos pelo
+frontend, busca suas imagens nas CDNs configuradas, redimensiona e posiciona o ícone no
+centro do QR Code com uma área de proteção para preservar a leitura, e devolve a imagem
+como um Data URI Base64 pronta para ser exibida ou enviada pela API. Também mantém o
+tratamento de falhas de ícones isolado, permitindo que o QR Code continue sendo gerado
+mesmo quando uma imagem externa não está disponível.
 """
+
 
 import random
 import string

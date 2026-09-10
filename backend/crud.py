@@ -1,15 +1,23 @@
 """
 O que há aqui:
-- get_url_by_original(original_url)
-- get_url_by_code(short_code)
-- create_url(original_url, short_code)
-- register_click(short_code, device_type)
-- get_clicks_stats(short_code)
-- get_all_export_data()
+- get_url_by_original(original_url): busca o código de um link já cadastrado
+- get_url_by_code(short_code): recupera a URL original e suas datas de validade
+- create_url(original_url, short_code, starts_at, expires_at): insere um novo link
+- check_code_exists(short_code): verifica se o código ou apelido já está em uso
+- register_click(short_code, device_type, os_name, browser_name): registra um acesso
+- get_clicks_stats(short_code): agrupa cliques por dispositivo, sistema e navegador
+- get_all_export_data(): consulta os dados necessários para a exportação CSV
+- Abertura, confirmação e encerramento das conexões usadas em cada operação
 
-Função do arquivo: Camada de persistência (Data Access Object). 
-Isola todas as queries SQL (SELECT, INSERT) do resto da aplicação.
+Função do arquivo: Servir como camada de persistência (Data Access Object) da aplicação.
+Ele centraliza as consultas e comandos SQL executados no PostgreSQL para links curtos
+e métricas de acesso, isolando o acesso aos dados das regras de negócio em services.py
+e do roteamento definido em main.py. As funções transformam os resultados do banco em
+valores simples, dicionários ou listas que podem ser consumidos pelas demais camadas,
+mantendo a responsabilidade deste módulo limitada à leitura e gravação dos registros.
 """
+
+
 from backend.database import get_connection
 
 def get_url_by_original(original_url: str):
