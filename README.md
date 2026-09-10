@@ -8,21 +8,27 @@ Um sistema de encurtamento de URLs de alta performance e nível corporativo, des
 
 <br>
 
-Acesse o site em: [Jet.URL](https://jet-url.onrender.com/)
+Acesse o site em: [Jet.URL](https://jet-url.onrender.com/) (talvez seja necessário aguardar o Render carregar a página)
 
-<img width="1000" height="500" alt="jetgif1" src="https://github.com/user-attachments/assets/a846ea9e-b450-43be-bd0b-75781010e730" />
+<img width="1100" height="500" alt="jeturlgif v2_1" src="https://github.com/user-attachments/assets/ff1bbdcb-007e-4963-9f18-005a9636f099" />
 
 ---
 
 Este projeto vai muito além de um simples redirecionador: ele atua como um verdadeiro micro-pipeline de dados. Capturando métricas de acesso granulares em tempo real e disponibilizando exportações otimizadas (ETL), o Jet.URL serve como uma base sólida para integrações com ferramentas de Business Intelligence (BI) e Inteligência Artificial.
 
-<img width="1000" height="500" alt="jetgif2" src="https://github.com/user-attachments/assets/ff3c9fad-d44d-474b-ab8d-013c4e515c64" />
+<img width="1100" height="500" alt="jeturlgif v2_2" src="https://github.com/user-attachments/assets/4146d3e9-a3ba-43ea-a4cf-d28642e6c3e8" />
 
 ---
 
 A interface reativa garante uma experiência de usuário (*UX*) Premium, suportando **Dark Mode** e **Light Mode** dinâmicos que ajustam gráficos e logotipos automaticamente.
 
-<img width="1000" height="500" alt="jetgif3" src="https://github.com/user-attachments/assets/0a5f2fe4-10dd-4e65-98ac-7d65181273e0" />
+<img width="1100" height="500" alt="jeturlgif v2_3" src="https://github.com/user-attachments/assets/43f9c4e1-0ae1-46a1-aaf7-57b95d962566" />
+
+<br>
+
+---
+
+<img width="1100" height="500" alt="jeturlgif v2_4" src="https://github.com/user-attachments/assets/65321641-caec-4c44-a1e8-5ddf97a4e8e7" />
 
 <br>
 
@@ -76,6 +82,10 @@ O sistema utiliza um modelo relacional eficiente, blindado e escalável no Postg
 
 * **Tabela `urls`**: Armazena as URLs originais, a chave única gerada (`short_code`), e as regras temporais de validade (`starts_at` e `expires_at`).
 * **Tabela `clicks`**: Registra individualmente cada evento de acesso. Conectada via Chave Estrangeira (Foreign Key), ela armazena logs de `device_type`, `os_name` e `browser_name`.
+
+<br>
+
+<img width="1100" height="500" alt="jeturlgif v2_5" src="https://github.com/user-attachments/assets/cf0b24d3-5200-46d8-b614-e65fe8fdab03" />
 
 <br>
 
