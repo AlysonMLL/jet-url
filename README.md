@@ -37,7 +37,6 @@ Acesse o site em: [Jet.URL](https://jet-url.onrender.com/) (talvez seja necessá
 
 <img width="290" height="70" alt="PostgreSQL_zonalogo" src="https://github.com/user-attachments/assets/571efa63-8747-44e1-900a-cde7f7ead7a7" />
 <img width="310" height="70" alt="Supabase_zonalogo" src="https://github.com/user-attachments/assets/3c88ff0c-c737-4bdd-9d5a-7ea80f0cdf5d" />
-<img width="70" height="70" alt="git-svgrepo-com" src="https://github.com/user-attachments/assets/0e5ee623-61b4-4f80-97c0-e9dfbc7f8b69" />
 
 </p>
 
