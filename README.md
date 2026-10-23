@@ -1,6 +1,10 @@
 <p align="center">
-  <img width="450" height="150" alt="logo-jet url_darkmode" src="https://github.com/user-attachments/assets/79c79e98-9606-4d64-a880-c88c578e885f" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/79c79e98-9606-4d64-a880-c88c578e885f">
+    <img width="450" alt="logo-jeturl" src="https://github.com/user-attachments/assets/79c79e98-9606-4d64-a880-c88c578e885f">
+  </picture>
 </p>
+
 
 # 🚀 Jet.URL | Encurtador de Links Analítico & SaaS
 
@@ -8,7 +12,7 @@ Um sistema de encurtamento de URLs de alta performance e nível corporativo, des
 
 <br>
 
-Acesse o site em: [Jet.URL](https://jet-url.onrender.com/) (talvez seja necessário aguardar o Render carregar a página)
+Acesse o site em: [Jet.URL](https://jet-url.onrender.com/) (talvez seja necessário aguardar o Render carregar o servidor)
 
 <br>
 
@@ -27,7 +31,7 @@ Acesse o site em: [Jet.URL](https://jet-url.onrender.com/) (talvez seja necessá
 
 <p align="center">
 
-<img width="320" height="70" alt="FastAPI_logo" src="https://github.com/user-attachments/assets/2b96f7fc-ca27-4f2c-9583-7d86c4d85d86" />
+<img width="340" height="70" alt="FastAPI_logo" src="https://github.com/user-attachments/assets/2b96f7fc-ca27-4f2c-9583-7d86c4d85d86" />
 <img width="200" height="70" alt="Jinja_software_logo" src="https://github.com/user-attachments/assets/590e5bcb-b661-4b3b-962a-1c2974fa12ed" />
 <img width="240" height="70" alt="render" src="https://github.com/user-attachments/assets/f6a1e874-971f-4428-857b-83fa7edf56a1" />
 
